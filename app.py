@@ -482,16 +482,20 @@ def create_block():
         return jsonify({'error': 'page_id and block_type required'}), 400
 
     conn = get_db()
-    cursor = conn.execute(
-        '''INSERT INTO blocks (page_id, block_type, content, subject, due_date, recurrence, ref_date, ref_type, ref_detail, priority, is_active, end_date, image_path, task_priority, category, description, task_status, reminder_time)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-        (page_id, block_type, content, subject, due_date, recurrence, ref_date, ref_type, ref_detail, priority, is_active, end_date, image_path, task_priority, category, description, task_status, reminder_time)
-    )
-    block_id = cursor.lastrowid
-    conn.commit()
-    block = conn.execute('SELECT * FROM blocks WHERE id = ?', (block_id,)).fetchone()
-    conn.close()
-    return jsonify(dict(block)), 201
+    try:
+        cursor = conn.execute(
+            '''INSERT INTO blocks (page_id, block_type, content, subject, due_date, recurrence, ref_date, ref_type, ref_detail, priority, is_active, end_date, image_path, task_priority, category, description, task_status, reminder_time)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+            (page_id, block_type, content, subject, due_date, recurrence, ref_date, ref_type, ref_detail, priority, is_active, end_date, image_path, task_priority, category, description, task_status, reminder_time)
+        )
+        block_id = cursor.lastrowid
+        conn.commit()
+        block = conn.execute('SELECT * FROM blocks WHERE id = ?', (block_id,)).fetchone()
+        conn.close()
+        return jsonify(dict(block)), 201
+    except Exception as e:
+        conn.close()
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/api/blocks/<int:block_id>', methods=['PUT'])

@@ -105,9 +105,9 @@ def _migrate_db():
         create_sql = cursor.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='blocks'").fetchone()
         if create_sql and 'notepad' not in create_sql[0]:
             cols = [r[1] for r in cursor.execute("PRAGMA table_info(blocks)").fetchall()]
-            all_cols = ','.join(cols)
-            cursor.execute("CREATE TABLE blocks_new AS SELECT * FROM blocks")
-            cursor.execute("DROP TABLE blocks")
+            cursor.execute("PRAGMA foreign_keys = OFF")
+            cursor.execute("BEGIN TRANSACTION")
+            cursor.execute("ALTER TABLE blocks RENAME TO blocks_old")
             cursor.execute("""CREATE TABLE blocks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 page_id INTEGER NOT NULL,
@@ -134,8 +134,24 @@ def _migrate_db():
             )""")
             insert_cols = [c for c in cols if c != 'id']
             cols_str = ','.join(insert_cols)
-            cursor.execute("INSERT INTO blocks(" + cols_str + ") SELECT " + cols_str + " FROM blocks_new")
-            cursor.execute("DROP TABLE blocks_new")
+            cursor.execute("INSERT INTO blocks(" + cols_str + ") SELECT " + cols_str + " FROM blocks_old")
+            cursor.execute("DROP TABLE blocks_old")
+            cursor.execute("PRAGMA foreign_keys = ON")
+            conn.commit()
+    except Exception as e:
+        try:
+            conn.rollback()
+        except Exception:
+            pass
+        try:
+            cursor.execute("PRAGMA foreign_keys = ON")
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='blocks_old'")
+            if cursor.fetchone():
+                cursor.execute("DROP TABLE IF EXISTS blocks")
+                cursor.execute("ALTER TABLE blocks_old RENAME TO blocks")
+                conn.commit()
+        except Exception:
+            pass
     except Exception:
         pass
 
