@@ -1486,36 +1486,63 @@ class MyNoteBook {
             html += '<div class="eb-group"><label class="eb-label">Note Content</label>' +
                 '<div class="np-modal-toolbar">' +
                     '<div class="np-tb-group">' +
-                        '<select class="np-select" id="ebNpFontFamily" onchange="window.app._npBlockFormat(\'fontName\', this.value)">' +
-                            '<option value="Segoe UI">Font</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Courier New">Courier</option>' +
+                        '<select class="np-select np-font-select" onchange="window.app._npBlockFormat(\'fontName\', this.value)">' +
+                            '<option value="Segoe UI" style="font-family:Segoe UI">Segoe UI</option><option value="Arial" style="font-family:Arial">Arial</option><option value="Georgia" style="font-family:Georgia">Georgia</option><option value="Times New Roman" style="font-family:Times New Roman">Times New Roman</option><option value="Courier New" style="font-family:Courier New">Courier New</option><option value="Verdana" style="font-family:Verdana">Verdana</option><option value="Trebuchet MS" style="font-family:Trebuchet MS">Trebuchet MS</option><option value="Comic Sans MS" style="font-family:Comic Sans MS">Comic Sans MS</option><option value="Impact" style="font-family:Impact">Impact</option><option value="Lucida Console" style="font-family:Lucida Console">Lucida Console</option><option value="Palatino Linotype" style="font-family:Palatino Linotype">Palatino</option><option value="Garamond" style="font-family:Garamond">Garamond</option><option value="Tahoma" style="font-family:Tahoma">Tahoma</option><option value="Century Gothic" style="font-family:Century Gothic">Century Gothic</option><option value="Book Antiqua" style="font-family:Book Antiqua">Book Antiqua</option>' +
                         '</select>' +
-                        '<select class="np-select" id="ebNpFontSize" onchange="window.app._npBlockFormat(\'fontSize\', this.value)">' +
-                            '<option value="3">Size</option><option value="1">Small</option><option value="3">Normal</option><option value="5">Large</option>' +
+                        '<select class="np-select np-size-select" onchange="window.app._npBlockFormat(\'fontSize\', this.value)">' +
+                            '<option value="3">Size</option><option value="1">Tiny</option><option value="2">Small</option><option value="3">Normal</option><option value="4">Medium</option><option value="5">Large</option><option value="6">XL</option><option value="7">XXL</option>' +
                         '</select>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
                         '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'bold\')" title="Bold"><b>B</b></button>' +
                         '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'italic\')" title="Italic"><i>I</i></button>' +
                         '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'underline\')" title="Underline"><u>U</u></button>' +
-                        '<button type="button" class="np-tbtn np-highlight" onclick="window.app._npBlockFormat(\'hiliteColor\', \'yellow\')" title="Highlight">&#128396;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'strikeThrough\')" title="Strikethrough"><s>S</s></button>' +
+                        '<div class="np-highlight-dropdown">' +
+                            '<button type="button" class="np-tbtn np-highlight-btn" title="Highlight Color">&#128396;</button>' +
+                            '<div class="np-highlight-popup">' +
+                                '<div class="np-hl-swatch" style="background:#fef08a" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fef08a\')" title="Yellow"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bbf7d0" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#bbf7d0\')" title="Green"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bfdbfe" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#bfdbfe\')" title="Blue"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fbcfe8" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fbcfe8\')" title="Pink"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fed7aa" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fed7aa\')" title="Orange"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ddd6fe" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#ddd6fe\')" title="Purple"></div>' +
+                                '<div class="np-hl-swatch" style="background:#e2e8f0" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#e2e8f0\')" title="Gray"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ffffff;border:1px solid #ccc" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#ffffff\')" title="Remove"></div>' +
+                            '</div>' +
+                        '</div>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyLeft\')" title="Left">&#8676;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyCenter\')" title="Center">&#8596;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyRight\')" title="Right">&#8677;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\')" title="List">&bull; List</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyLeft\')" title="Align Left">&#8676;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyCenter\')" title="Align Center">&#8596;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyRight\')" title="Align Right">&#8677;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyFull\')" title="Justify" style="font-size:10px;">JFY</button>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\')" title="Bullet List">&bull; &#8226;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertOrderedList\')" title="Numbered List">1. &#8226;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\');window.app._npBlockFormat(\'insertUnorderedList\')" title="Dash List" style="font-size:10px;">&#8212; List</button>' +
+                    '</div>' +
+                    '<div class="np-tb-group">' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npInsertTable()" title="Insert Table" style="font-size:10px;">&#9638; Table</button>' +
                         '<label class="np-tbtn np-file-upload" title="Insert Image">&#128247; Image' +
                             '<input type="file" id="ebNpImageInput" accept=".jpg,.jpeg,.png" multiple onchange="window.app._npBlockInsertImage(event)" style="display:none">' +
                         '</label>' +
-                        '<select class="np-select" onchange="window.app._npBlockInsertIcon(this)" title="Icons">' +
-                            '<option value="">&#11088; Icons</option><option value="&#9989;">&#9989;</option><option value="&#10060;">&#10060;</option><option value="&#11088;">&#11088;</option><option value="&#128293;">&#128293;</option><option value="&#128205;">&#128205;</option>' +
+                    '</div>' +
+                    '<div class="np-tb-group">' +
+                        '<select class="np-select" onchange="window.app._npBlockInsertIcon(this)" title="Insert Icon">' +
+                            '<option value="">&#11088; Icons</option>' +
+                            '<optgroup label="Status"><option value="&#9989;">&#9989; Check</option><option value="&#10060;">&#10060; Cross</option><option value="&#9888;&#65039;">&#9888;&#65039; Warning</option><option value="&#128680;">&#128680; Prohibited</option><option value="&#128274;">&#128274; Locked</option><option value="&#128275;">&#128275; Unlocked</option></optgroup>' +
+                            '<optgroup label="Objects"><option value="&#128204;">&#128204; Pin</option><option value="&#128221;">&#128221; Pencil</option><option value="&#128222;">&#128222; Phone</option><option value="&#128187;">&#128187; PC</option><option value="&#128188;">&#128188; Briefcase</option><option value="&#128203;">&#128203; Clipboard</option><option value="&#128218;">&#128218; Book</option><option value="&#128214;">&#128214; Open Book</option></optgroup>' +
+                            '<optgroup label="Arrows"><option value="&#10145;&#65039;">&#10145;&#65039; Right</option><option value="&#11013;&#65039;">&#11013;&#65039; Left</option><option value="&#11014;&#65039;">&#11014;&#65039; Up</option><option value="&#11015;&#65039;">&#11015;&#65039; Down</option></optgroup>' +
+                            '<optgroup label="Stars &amp; Hearts"><option value="&#11088;">&#11088; Star</option><option value="&#11089;">&#11089; Orange Star</option><option value="&#11090;">&#11090; Yellow Star</option><option value="&#11091;">&#11091; Green Star</option><option value="&#128150;">&#128150; Heart</option><option value="&#128154;">&#128154; Green Heart</option><option value="&#128155;">&#128155; Blue Heart</option><option value="&#128156;">&#128156; Purple Heart</option></optgroup>' +
+                            '<optgroup label="Nature"><option value="&#9728;&#65039;">&#9728;&#65039; Sun</option><option value="&#127774;">&#127774; Moon</option><option value="&#9749;">&#9749; Coffee</option><option value="&#128293;">&#128293; Fire</option></optgroup>' +
+                            '<optgroup label="Symbols"><option value="&#128161;">&#128161; Bulb</option><option value="&#128176;">&#128176; Money</option><option value="&#128276;">&#128276; Bell</option><option value="&#128681;">&#128681; Flag</option><option value="&#127919;">&#127919; Target</option><option value="&#127937;">&#127937; Trophy</option><option value="&#127942;">&#127942; Medal</option></optgroup>' +
                         '</select>' +
                     '</div>' +
                     '<div class="np-tb-group np-tb-last">' +
-                        '<input type="color" class="np-color-pick" onchange="window.app._npBlockFormat(\'foreColor\', this.value)" title="Text Color">' +
-                        '<button type="button" class="np-tbtn np-tbtn-clear" onclick="window.app._npBlockFormat(\'removeFormat\')" title="Clear">&#10005;</button>' +
+                        '<input type="color" class="np-color-pick" value="#000000" onchange="window.app._npBlockFormat(\'foreColor\', this.value)" title="Text Color">' +
+                        '<button type="button" class="np-tbtn np-tbtn-clear" onclick="window.app._npBlockFormat(\'removeFormat\')" title="Clear Formatting">&#10005;</button>' +
                     '</div>' +
                 '</div>' +
                 '<div class="np-modal-editor" id="ebNpEditor" contenteditable="true" data-placeholder="Write your note..."></div>' +
@@ -2349,47 +2376,134 @@ class MyNoteBook {
                 '</div>' +
                 '<div class="np-modal-toolbar">' +
                     '<div class="np-tb-group">' +
-                        '<select class="np-select" id="npBlockFontFamily" onchange="window.app._npBlockFormat(\'fontName\', this.value)">' +
-                            '<option value="Segoe UI">Font</option>' +
-                            '<option value="Arial">Arial</option>' +
-                            '<option value="Georgia">Georgia</option>' +
-                            '<option value="Courier New">Courier</option>' +
+                        '<select class="np-select np-font-select" onchange="window.app._npBlockFormat(\'fontName\', this.value)">' +
+                            '<option value="Segoe UI" style="font-family:Segoe UI">Segoe UI</option>' +
+                            '<option value="Arial" style="font-family:Arial">Arial</option>' +
+                            '<option value="Georgia" style="font-family:Georgia">Georgia</option>' +
+                            '<option value="Times New Roman" style="font-family:Times New Roman">Times New Roman</option>' +
+                            '<option value="Courier New" style="font-family:Courier New">Courier New</option>' +
+                            '<option value="Verdana" style="font-family:Verdana">Verdana</option>' +
+                            '<option value="Trebuchet MS" style="font-family:Trebuchet MS">Trebuchet MS</option>' +
+                            '<option value="Comic Sans MS" style="font-family:Comic Sans MS">Comic Sans MS</option>' +
+                            '<option value="Impact" style="font-family:Impact">Impact</option>' +
+                            '<option value="Lucida Console" style="font-family:Lucida Console">Lucida Console</option>' +
+                            '<option value="Palatino Linotype" style="font-family:Palatino Linotype">Palatino</option>' +
+                            '<option value="Garamond" style="font-family:Garamond">Garamond</option>' +
+                            '<option value="Tahoma" style="font-family:Tahoma">Tahoma</option>' +
+                            '<option value="Century Gothic" style="font-family:Century Gothic">Century Gothic</option>' +
+                            '<option value="Book Antiqua" style="font-family:Book Antiqua">Book Antiqua</option>' +
                         '</select>' +
-                        '<select class="np-select" id="npBlockFontSize" onchange="window.app._npBlockFormat(\'fontSize\', this.value)">' +
+                        '<select class="np-select np-size-select" onchange="window.app._npBlockFormat(\'fontSize\', this.value)">' +
                             '<option value="3">Size</option>' +
-                            '<option value="1">Small</option>' +
+                            '<option value="1">Tiny</option>' +
+                            '<option value="2">Small</option>' +
                             '<option value="3">Normal</option>' +
+                            '<option value="4">Medium</option>' +
                             '<option value="5">Large</option>' +
+                            '<option value="6">XL</option>' +
+                            '<option value="7">XXL</option>' +
                         '</select>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'bold\')" title="Bold"><b>B</b></button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'italic\')" title="Italic"><i>I</i></button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'underline\')" title="Underline"><u>U</u></button>' +
-                        '<button type="button" class="np-tbtn np-highlight" onclick="window.app._npBlockFormat(\'hiliteColor\', \'yellow\')" title="Highlight">&#128396;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'bold\')" title="Bold (Ctrl+B)"><b>B</b></button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'italic\')" title="Italic (Ctrl+I)"><i>I</i></button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'underline\')" title="Underline (Ctrl+U)"><u>U</u></button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'strikeThrough\')" title="Strikethrough"><s>S</s></button>' +
+                        '<div class="np-highlight-dropdown">' +
+                            '<button type="button" class="np-tbtn np-highlight-btn" title="Highlight Color">&#128396;</button>' +
+                            '<div class="np-highlight-popup">' +
+                                '<div class="np-hl-swatch" style="background:#fef08a" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fef08a\')" title="Yellow"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bbf7d0" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#bbf7d0\')" title="Green"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bfdbfe" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#bfdbfe\')" title="Blue"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fbcfe8" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fbcfe8\')" title="Pink"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fed7aa" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fed7aa\')" title="Orange"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ddd6fe" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#ddd6fe\')" title="Purple"></div>' +
+                                '<div class="np-hl-swatch" style="background:#e2e8f0" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#e2e8f0\')" title="Gray"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ffffff;border:1px solid #ccc" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#ffffff\')" title="Remove"></div>' +
+                            '</div>' +
+                        '</div>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyLeft\')" title="Left">&#8676;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyCenter\')" title="Center">&#8596;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyRight\')" title="Right">&#8677;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\')" title="List">&bull; List</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyLeft\')" title="Align Left">&#8676;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyCenter\')" title="Align Center">&#8596;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyRight\')" title="Align Right">&#8677;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyFull\')" title="Justify" style="font-size:10px;">JFY</button>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\')" title="Bullet List">&bull; &#8226;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertOrderedList\')" title="Numbered List">1. &#8226;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\');window.app._npBlockFormat(\'insertUnorderedList\')" title="Dash List" style="font-size:10px;">&#8212; List</button>' +
+                    '</div>' +
+                    '<div class="np-tb-group">' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npInsertTable()" title="Insert Table" style="font-size:10px;">&#9638; Table</button>' +
                         '<label class="np-tbtn np-file-upload" title="Insert Image">&#128247; Image' +
                             '<input type="file" id="npBlockImageInput" accept=".jpg,.jpeg,.png" multiple onchange="window.app._npBlockInsertImage(event)" style="display:none">' +
                         '</label>' +
-                        '<select class="np-select" onchange="window.app._npBlockInsertIcon(this)" title="Icons">' +
+                    '</div>' +
+                    '<div class="np-tb-group">' +
+                        '<select class="np-select" onchange="window.app._npBlockInsertIcon(this)" title="Insert Icon">' +
                             '<option value="">&#11088; Icons</option>' +
-                            '<option value="&#9989;">&#9989;</option>' +
-                            '<option value="&#10060;">&#10060;</option>' +
-                            '<option value="&#11088;">&#11088;</option>' +
-                            '<option value="&#128293;">&#128293;</option>' +
-                            '<option value="&#128205;">&#128205;</option>' +
+                            '<optgroup label="Status">' +
+                                '<option value="&#9989;">&#9989; Check Mark</option>' +
+                                '<option value="&#10060;">&#10060; Cross Mark</option>' +
+                                '<option value="&#9888;&#65039;">&#9888;&#65039; Warning</option>' +
+                                '<option value="&#128680;">&#128680; Prohibited</option>' +
+                                '<option value="&#128274;">&#128274; Locked</option>' +
+                                '<option value="&#128275;">&#128275; Unlocked</option>' +
+                            '</optgroup>' +
+                            '<optgroup label="Objects">' +
+                                '<option value="&#128204;">&#128204; Pin</option>' +
+                                '<option value="&#128278;">&#128278; Fax</option>' +
+                                '<option value="&#128196;">&#128196; Page</option>' +
+                                '<option value="&#128221;">&#128221; Pencil</option>' +
+                                '<option value="&#128222;">&#128222; Telephone</option>' +
+                                '<option value="&#128187;">&#128187; Computer</option>' +
+                                '<option value="&#128188;">&#128188; Briefcase</option>' +
+                                '<option value="&#128203;">&#128203; Clipboard</option>' +
+                                '<option value="&#128218;">&#128218; Book</option>' +
+                                '<option value="&#128214;">&#128214; Open Book</option>' +
+                            '</optgroup>' +
+                            '<optgroup label="Arrows">' +
+                                '<option value="&#10145;&#65039;">&#10145;&#65039; Right Arrow</option>' +
+                                '<option value="&#11013;&#65039;">&#11013;&#65039; Left Arrow</option>' +
+                                '<option value="&#11014;&#65039;">&#11014;&#65039; Up Arrow</option>' +
+                                '<option value="&#11015;&#65039;">&#11015;&#65039; Down Arrow</option>' +
+                                '<option value="&#128260;">&#128260; Repeat</option>' +
+                            '</optgroup>' +
+                            '<optgroup label="Stars &amp; Hearts">' +
+                                '<option value="&#11088;">&#11088; Star</option>' +
+                                '<option value="&#11089;">&#11089; Orange Star</option>' +
+                                '<option value="&#11090;">&#11090; Yellow Star</option>' +
+                                '<option value="&#11091;">&#11091; Green Star</option>' +
+                                '<option value="&#128150;">&#128150; Heart</option>' +
+                                '<option value="&#128154;">&#128154; Green Heart</option>' +
+                                '<option value="&#128155;">&#128155; Blue Heart</option>' +
+                                '<option value="&#128156;">&#128156; Purple Heart</option>' +
+                            '</optgroup>' +
+                            '<optgroup label="Weather &amp; Nature">' +
+                                '<option value="&#9728;&#65039;">&#9728;&#65039; Sun</option>' +
+                                '<option value="&#127774;">&#127774; Moon</option>' +
+                                '<option value="&#9749;">&#9749; Coffee</option>' +
+                                '<option value="&#127820;">&#127820; Grape</option>' +
+                                '<option value="&#127823;">&#127823; Strawberry</option>' +
+                            '</optgroup>' +
+                            '<optgroup label="Symbols">' +
+                                '<option value="&#128161;">&#128161; Light Bulb</option>' +
+                                '<option value="&#128163;">&#128163; Bomb</option>' +
+                                '<option value="&#128176;">&#128176; Money</option>' +
+                                '<option value="&#128276;">&#128276; Bell</option>' +
+                                '<option value="&#128277;">&#128277; megaphone</option>' +
+                                '<option value="&#128681;">&#128681; Flag</option>' +
+                                '<option value="&#127919;">&#127919; Target</option>' +
+                                '<option value="&#127937;">&#127937; Trophy</option>' +
+                                '<option value="&#127942;">&#127942; Medal</option>' +
+                                '<option value="&#128293;">&#128293; Fire</option>' +
+                            '</optgroup>' +
                         '</select>' +
                     '</div>' +
                     '<div class="np-tb-group np-tb-last">' +
-                        '<input type="color" class="np-color-pick" onchange="window.app._npBlockFormat(\'foreColor\', this.value)" title="Text Color">' +
-                        '<button type="button" class="np-tbtn np-tbtn-clear" onclick="window.app._npBlockFormat(\'removeFormat\')" title="Clear">&#10005;</button>' +
+                        '<input type="color" class="np-color-pick" value="#000000" onchange="window.app._npBlockFormat(\'foreColor\', this.value)" title="Text Color">' +
+                        '<button type="button" class="np-tbtn np-tbtn-clear" onclick="window.app._npBlockFormat(\'removeFormat\')" title="Clear Formatting">&#10005;</button>' +
                     '</div>' +
                 '</div>' +
                 '<div class="np-modal-editor" id="npBlockEditor" contenteditable="true" data-placeholder="Start writing your note..."></div>' +
@@ -2540,15 +2654,23 @@ class MyNoteBook {
         return '';
     }
 
+    _npGetActiveEditor() {
+        var eb = document.getElementById('ebNpEditor');
+        if (eb && eb.closest('.eb-overlay')) return eb;
+        var nb = document.getElementById('npBlockEditor');
+        if (nb) return nb;
+        return eb || nb;
+    }
+
     _npBlockFormat(command, value) {
-        var editor = document.getElementById('npBlockEditor');
+        var editor = this._npGetActiveEditor();
         if (editor) editor.focus();
         document.execCommand(command, false, value || null);
     }
 
     _npBlockInsertIcon(sel) {
         if (sel.value) {
-            var editor = document.getElementById('npBlockEditor');
+            var editor = this._npGetActiveEditor();
             if (editor) editor.focus();
             document.execCommand('insertText', false, sel.value);
             sel.value = '';
@@ -2566,7 +2688,7 @@ class MyNoteBook {
             (function(f) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    var editor = document.getElementById('npBlockEditor');
+                    var editor = self._npGetActiveEditor();
                     if (editor) {
                         editor.focus();
                         var sel = window.getSelection();
@@ -2591,6 +2713,41 @@ class MyNoteBook {
             })(file);
         }
         event.target.value = '';
+    }
+
+    _npInsertTable() {
+        var rows = prompt('Number of rows:', '3');
+        var cols = prompt('Number of columns:', '3');
+        if (!rows || !cols) return;
+        rows = parseInt(rows); cols = parseInt(cols);
+        if (isNaN(rows) || isNaN(cols) || rows < 1 || cols < 1) return;
+        var table = '<table style="border-collapse:collapse;width:100%;margin:8px 0;">';
+        for (var r = 0; r < rows; r++) {
+            table += '<tr>';
+            for (var c = 0; c < cols; c++) {
+                if (r === 0) table += '<th style="border:1px solid #ccc;padding:6px 10px;background:#f0f0f5;font-weight:600;">Header ' + (c+1) + '</th>';
+                else table += '<td style="border:1px solid #ccc;padding:6px 10px;">&nbsp;</td>';
+            }
+            table += '</tr>';
+        }
+        table += '</table>';
+        var editor = this._npGetActiveEditor();
+        if (editor) {
+            editor.focus();
+            var sel = window.getSelection();
+            var range = sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
+            if (!range || !editor.contains(range.commonAncestorContainer)) {
+                range = document.createRange();
+                range.selectNodeContents(editor);
+                range.collapse(false);
+            }
+            range.deleteContents();
+            var temp = document.createElement('div');
+            temp.innerHTML = table;
+            var frag = document.createDocumentFragment();
+            while (temp.firstChild) frag.appendChild(temp.firstChild);
+            range.insertNode(frag);
+        }
     }
 
     async createBlock(type) {

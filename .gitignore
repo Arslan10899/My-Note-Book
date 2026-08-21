@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 *.pyo
+intellinote/
 intellinote.db
 intellinote.db.bak
 static/uploads/

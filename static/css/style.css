@@ -510,6 +510,10 @@ body.sidebar-collapsed .top-bar-brand { opacity: 1; max-width: 300px; pointer-ev
 .notepad-block { border-left: 4px solid #6366f1; }
 .block-notepad-content { font-family: 'Segoe UI', sans-serif; font-size: 13px; line-height: 1.7; color: var(--cui-body-color); padding: 12px 14px; background: var(--cui-tertiary-bg); border-radius: 10px; margin-top: 8px; word-wrap: break-word; overflow-wrap: break-word; }
 .block-notepad-content img { max-width: 200px; height: auto; border-radius: 6px; margin: 6px 0; display: block; }
+.block-notepad-content table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+.block-notepad-content table td, .block-notepad-content table th { border: 1px solid #ccc; padding: 6px 10px; min-width: 60px; }
+.block-notepad-content table th { background: #f0f0f5; font-weight: 600; }
+.block-notepad-content ul, .block-notepad-content ol { padding-left: 20px; }
 
 /* Notepad Modal Editor */
 .np-modal-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; padding: 6px 10px; background: var(--cui-body-bg); border: 1.5px solid var(--cui-border-color); border-radius: 10px 10px 0 0; border-bottom: none; }
@@ -520,12 +524,24 @@ body.sidebar-collapsed .top-bar-brand { opacity: 1; max-width: 300px; pointer-ev
 .np-select { padding: 3px 5px; font-size: 11px; border: 1px solid var(--cui-border-color); border-radius: 6px; background: var(--cui-body-bg); color: var(--cui-body-color); cursor: pointer; }
 .np-color-pick { width: 24px; height: 24px; border: none; border-radius: 6px; cursor: pointer; padding: 0; background: none; }
 .np-highlight { background: #fef3c7 !important; color: #92400e !important; }
+.np-highlight-dropdown { position: relative; display: inline-block; }
+.np-highlight-btn { position: relative; }
+.np-highlight-popup { display: none; position: absolute; top: 100%; left: 0; z-index: 1000; background: var(--cui-body-bg); border: 1.5px solid var(--cui-border-color); border-radius: 8px; padding: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 160px; }
+.np-highlight-dropdown:hover .np-highlight-popup,
+.np-highlight-popup:hover { display: flex; flex-wrap: wrap; gap: 4px; }
+.np-hl-swatch { width: 22px; height: 22px; border-radius: 4px; cursor: pointer; border: 1.5px solid rgba(0,0,0,0.1); transition: 0.15s; flex-shrink: 0; }
+.np-hl-swatch:hover { transform: scale(1.25); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
 .np-file-upload { display: inline-flex; align-items: center; }
 .np-modal-editor { min-height: 160px; max-height: 400px; overflow-y: auto; padding: 14px; border: 1.5px solid var(--cui-border-color); border-radius: 0 0 10px 10px; background: #fff; color: #000; font-family: 'Segoe UI', sans-serif; font-size: 13px; line-height: 1.7; outline: none; }
 .np-modal-editor:empty::before { content: attr(data-placeholder); color: #9ca3af; pointer-events: none; }
 .np-modal-editor:focus { border-color: var(--cui-primary); box-shadow: 0 0 0 2px rgba(88,86,214,0.15); }
 .np-modal-editor img { max-width: 200px; height: auto; border-radius: 6px; margin: 6px 0; display: block; }
-[np-modal-editor] ul { padding-left: 20px; }
+.np-modal-editor table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+.np-modal-editor table td, .np-modal-editor table th { border: 1px solid #ccc; padding: 6px 10px; min-width: 60px; }
+.np-modal-editor table th { background: #f0f0f5; font-weight: 600; }
+.np-modal-editor ul { padding-left: 20px; }
+.np-modal-editor ol { padding-left: 20px; }
+.np-font-select { min-width: 110px; }
 
 /* ---------- Task Filter Bar ---------- */
 .task-filter-bar { margin-top: 12px; padding: 10px 12px; background: var(--cui-body-bg); border-radius: 12px; border: 1.5px solid var(--cui-border-color); }
