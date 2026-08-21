@@ -1489,51 +1489,51 @@ class MyNoteBook {
             html += '<div class="eb-group"><label class="eb-label">Note Content</label>' +
                 '<div class="np-modal-toolbar">' +
                     '<div class="np-tb-group">' +
-                        '<select class="np-select np-font-select" onchange="window.app._npBlockFormat(\'fontName\', this.value)">' +
+                        '<select class="np-select np-font-select" onfocus="window.app._saveNpSelection()" onchange="window.app._npBlockFormat(\'fontName\', this.value)">' +
                             '<option value="Segoe UI" style="font-family:Segoe UI">Segoe UI</option><option value="Arial" style="font-family:Arial">Arial</option><option value="Georgia" style="font-family:Georgia">Georgia</option><option value="Times New Roman" style="font-family:Times New Roman">Times New Roman</option><option value="Courier New" style="font-family:Courier New">Courier New</option><option value="Verdana" style="font-family:Verdana">Verdana</option><option value="Trebuchet MS" style="font-family:Trebuchet MS">Trebuchet MS</option><option value="Comic Sans MS" style="font-family:Comic Sans MS">Comic Sans MS</option><option value="Impact" style="font-family:Impact">Impact</option><option value="Lucida Console" style="font-family:Lucida Console">Lucida Console</option><option value="Palatino Linotype" style="font-family:Palatino Linotype">Palatino</option><option value="Garamond" style="font-family:Garamond">Garamond</option><option value="Tahoma" style="font-family:Tahoma">Tahoma</option><option value="Century Gothic" style="font-family:Century Gothic">Century Gothic</option><option value="Book Antiqua" style="font-family:Book Antiqua">Book Antiqua</option>' +
                         '</select>' +
-                        '<select class="np-select np-size-select" onchange="window.app._npBlockFormat(\'fontSize\', this.value)">' +
+                        '<select class="np-select np-size-select" onfocus="window.app._saveNpSelection()" onchange="window.app._npBlockFormat(\'fontSize\', this.value)">' +
                             '<option value="3">Size</option><option value="1">Tiny</option><option value="2">Small</option><option value="3">Normal</option><option value="4">Medium</option><option value="5">Large</option><option value="6">XL</option><option value="7">XXL</option>' +
                         '</select>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'bold\')" title="Bold"><b>B</b></button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'italic\')" title="Italic"><i>I</i></button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'underline\')" title="Underline"><u>U</u></button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'strikeThrough\')" title="Strikethrough"><s>S</s></button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'bold\')" title="Bold"><b>B</b></button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'italic\')" title="Italic"><i>I</i></button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'underline\')" title="Underline"><u>U</u></button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'strikeThrough\')" title="Strikethrough"><s>S</s></button>' +
                         '<div class="np-highlight-dropdown">' +
-                            '<button type="button" class="np-tbtn np-highlight-btn" onmousedown="event.preventDefault();window.app._toggleHlPopup(this)" title="Highlight Color">&#128396;</button>' +
+                            '<button type="button" class="np-tbtn np-highlight-btn" onmousedown="event.preventDefault();window.app._saveNpSelection();window.app._toggleHlPopup(this)" title="Highlight Color">&#128396;</button>' +
                             '<div class="np-highlight-popup">' +
-                                '<div class="np-hl-swatch" style="background:#fef08a" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fef08a\');window.app._closeAllHlPopups()" title="Yellow"></div>' +
-                                '<div class="np-hl-swatch" style="background:#bbf7d0" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#bbf7d0\');window.app._closeAllHlPopups()" title="Green"></div>' +
-                                '<div class="np-hl-swatch" style="background:#bfdbfe" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#bfdbfe\');window.app._closeAllHlPopups()" title="Blue"></div>' +
-                                '<div class="np-hl-swatch" style="background:#fbcfe8" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fbcfe8\');window.app._closeAllHlPopups()" title="Pink"></div>' +
-                                '<div class="np-hl-swatch" style="background:#fed7aa" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fed7aa\');window.app._closeAllHlPopups()" title="Orange"></div>' +
-                                '<div class="np-hl-swatch" style="background:#ddd6fe" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#ddd6fe\');window.app._closeAllHlPopups()" title="Purple"></div>' +
-                                '<div class="np-hl-swatch" style="background:#e2e8f0" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#e2e8f0\');window.app._closeAllHlPopups()" title="Gray"></div>' +
-                                '<div class="np-hl-swatch" style="background:#ffffff;border:1px solid #ccc" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#ffffff\');window.app._closeAllHlPopups()" title="Remove"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fef08a" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#fef08a\');window.app._closeAllHlPopups()" title="Yellow"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bbf7d0" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#bbf7d0\');window.app._closeAllHlPopups()" title="Green"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bfdbfe" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#bfdbfe\');window.app._closeAllHlPopups()" title="Blue"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fbcfe8" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#fbcfe8\');window.app._closeAllHlPopups()" title="Pink"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fed7aa" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#fed7aa\');window.app._closeAllHlPopups()" title="Orange"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ddd6fe" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#ddd6fe\');window.app._closeAllHlPopups()" title="Purple"></div>' +
+                                '<div class="np-hl-swatch" style="background:#e2e8f0" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#e2e8f0\');window.app._closeAllHlPopups()" title="Gray"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ffffff;border:1px solid #ccc" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#ffffff\');window.app._closeAllHlPopups()" title="Remove"></div>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyLeft\')" title="Align Left">&#8676;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyCenter\')" title="Align Center">&#8596;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyRight\')" title="Align Right">&#8677;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyFull\')" title="Justify" style="font-size:10px;">JFY</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'justifyLeft\')" title="Align Left">&#8676;</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'justifyCenter\')" title="Align Center">&#8596;</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'justifyRight\')" title="Align Right">&#8677;</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'justifyFull\')" title="Justify" style="font-size:10px;">JFY</button>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\')" title="Bullet List">&bull; &#8226;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertOrderedList\')" title="Numbered List">1. &#8226;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\');window.app._npBlockFormat(\'insertUnorderedList\')" title="Dash List" style="font-size:10px;">&#8212; List</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'insertUnorderedList\')" title="Bullet List">&bull; &#8226;</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'insertOrderedList\')" title="Numbered List">1. &#8226;</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'insertUnorderedList\');window.app._npBlockFormat(\'insertUnorderedList\')" title="Dash List" style="font-size:10px;">&#8212; List</button>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npInsertTable()" title="Insert Table" style="font-size:10px;">&#9638; Table</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npInsertTable()" title="Insert Table" style="font-size:10px;">&#9638; Table</button>' +
                         '<label class="np-tbtn np-file-upload" title="Insert Image">&#128247; Image' +
                             '<input type="file" id="ebNpImageInput" accept=".jpg,.jpeg,.png" multiple onchange="window.app._npBlockInsertImage(event)" style="display:none">' +
                         '</label>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<select class="np-select" onchange="window.app._npBlockInsertIcon(this)" title="Insert Icon">' +
+                        '<select class="np-select" onfocus="window.app._saveNpSelection()" onchange="window.app._npBlockInsertIcon(this)" title="Insert Icon">' +
                             '<option value="">&#11088; Icons</option>' +
                             '<optgroup label="Status"><option value="&#9989;">&#9989; Check</option><option value="&#10060;">&#10060; Cross</option><option value="&#9888;&#65039;">&#9888;&#65039; Warning</option><option value="&#128680;">&#128680; Prohibited</option><option value="&#128274;">&#128274; Locked</option><option value="&#128275;">&#128275; Unlocked</option></optgroup>' +
                             '<optgroup label="Objects"><option value="&#128204;">&#128204; Pin</option><option value="&#128221;">&#128221; Pencil</option><option value="&#128222;">&#128222; Phone</option><option value="&#128187;">&#128187; PC</option><option value="&#128188;">&#128188; Briefcase</option><option value="&#128203;">&#128203; Clipboard</option><option value="&#128218;">&#128218; Book</option><option value="&#128214;">&#128214; Open Book</option></optgroup>' +
@@ -1544,8 +1544,8 @@ class MyNoteBook {
                         '</select>' +
                     '</div>' +
                     '<div class="np-tb-group np-tb-last">' +
-                        '<input type="color" class="np-color-pick" value="#000000" onchange="window.app._npBlockFormat(\'foreColor\', this.value)" title="Text Color">' +
-                        '<button type="button" class="np-tbtn np-tbtn-clear" onclick="window.app._npBlockFormat(\'removeFormat\')" title="Clear Formatting">&#10005;</button>' +
+                        '<input type="color" class="np-color-pick" value="#000000" onmousedown="window.app._saveNpSelection()" onchange="window.app._restoreNpSelection();window.app._npBlockFormat(\'foreColor\', this.value)" title="Text Color">' +
+                        '<button type="button" class="np-tbtn np-tbtn-clear" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'removeFormat\')" title="Clear Formatting">&#10005;</button>' +
                     '</div>' +
                 '</div>' +
                 '<div class="np-modal-editor" id="ebNpEditor" contenteditable="true" data-placeholder="Write your note..."></div>' +
@@ -2379,7 +2379,7 @@ class MyNoteBook {
                 '</div>' +
                 '<div class="np-modal-toolbar">' +
                     '<div class="np-tb-group">' +
-                        '<select class="np-select np-font-select" onchange="window.app._npBlockFormat(\'fontName\', this.value)">' +
+                        '<select class="np-select np-font-select" onfocus="window.app._saveNpSelection()" onchange="window.app._npBlockFormat(\'fontName\', this.value)">' +
                             '<option value="Segoe UI" style="font-family:Segoe UI">Segoe UI</option>' +
                             '<option value="Arial" style="font-family:Arial">Arial</option>' +
                             '<option value="Georgia" style="font-family:Georgia">Georgia</option>' +
@@ -2396,7 +2396,7 @@ class MyNoteBook {
                             '<option value="Century Gothic" style="font-family:Century Gothic">Century Gothic</option>' +
                             '<option value="Book Antiqua" style="font-family:Book Antiqua">Book Antiqua</option>' +
                         '</select>' +
-                        '<select class="np-select np-size-select" onchange="window.app._npBlockFormat(\'fontSize\', this.value)">' +
+                        '<select class="np-select np-size-select" onfocus="window.app._saveNpSelection()" onchange="window.app._npBlockFormat(\'fontSize\', this.value)">' +
                             '<option value="3">Size</option>' +
                             '<option value="1">Tiny</option>' +
                             '<option value="2">Small</option>' +
@@ -2408,43 +2408,43 @@ class MyNoteBook {
                         '</select>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'bold\')" title="Bold (Ctrl+B)"><b>B</b></button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'italic\')" title="Italic (Ctrl+I)"><i>I</i></button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'underline\')" title="Underline (Ctrl+U)"><u>U</u></button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'strikeThrough\')" title="Strikethrough"><s>S</s></button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'bold\')" title="Bold (Ctrl+B)"><b>B</b></button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'italic\')" title="Italic (Ctrl+I)"><i>I</i></button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'underline\')" title="Underline (Ctrl+U)"><u>U</u></button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'strikeThrough\')" title="Strikethrough"><s>S</s></button>' +
                         '<div class="np-highlight-dropdown">' +
-                            '<button type="button" class="np-tbtn np-highlight-btn" onmousedown="event.preventDefault();window.app._toggleHlPopup(this)" title="Highlight Color">&#128396;</button>' +
+                            '<button type="button" class="np-tbtn np-highlight-btn" onmousedown="event.preventDefault();window.app._saveNpSelection();window.app._toggleHlPopup(this)" title="Highlight Color">&#128396;</button>' +
                             '<div class="np-highlight-popup">' +
-                                '<div class="np-hl-swatch" style="background:#fef08a" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fef08a\');window.app._closeAllHlPopups()" title="Yellow"></div>' +
-                                '<div class="np-hl-swatch" style="background:#bbf7d0" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#bbf7d0\');window.app._closeAllHlPopups()" title="Green"></div>' +
-                                '<div class="np-hl-swatch" style="background:#bfdbfe" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#bfdbfe\');window.app._closeAllHlPopups()" title="Blue"></div>' +
-                                '<div class="np-hl-swatch" style="background:#fbcfe8" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fbcfe8\');window.app._closeAllHlPopups()" title="Pink"></div>' +
-                                '<div class="np-hl-swatch" style="background:#fed7aa" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fed7aa\');window.app._closeAllHlPopups()" title="Orange"></div>' +
-                                '<div class="np-hl-swatch" style="background:#ddd6fe" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#ddd6fe\');window.app._closeAllHlPopups()" title="Purple"></div>' +
-                                '<div class="np-hl-swatch" style="background:#e2e8f0" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#e2e8f0\');window.app._closeAllHlPopups()" title="Gray"></div>' +
-                                '<div class="np-hl-swatch" style="background:#ffffff;border:1px solid #ccc" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#ffffff\');window.app._closeAllHlPopups()" title="Remove"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fef08a" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#fef08a\');window.app._closeAllHlPopups()" title="Yellow"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bbf7d0" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#bbf7d0\');window.app._closeAllHlPopups()" title="Green"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bfdbfe" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#bfdbfe\');window.app._closeAllHlPopups()" title="Blue"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fbcfe8" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#fbcfe8\');window.app._closeAllHlPopups()" title="Pink"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fed7aa" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#fed7aa\');window.app._closeAllHlPopups()" title="Orange"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ddd6fe" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#ddd6fe\');window.app._closeAllHlPopups()" title="Purple"></div>' +
+                                '<div class="np-hl-swatch" style="background:#e2e8f0" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#e2e8f0\');window.app._closeAllHlPopups()" title="Gray"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ffffff;border:1px solid #ccc" onmousedown="event.preventDefault();window.app._restoreNpSelection();window.app._npBlockFormat(\'hiliteColor\',\'#ffffff\');window.app._closeAllHlPopups()" title="Remove"></div>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyLeft\')" title="Align Left">&#8676;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyCenter\')" title="Align Center">&#8596;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyRight\')" title="Align Right">&#8677;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyFull\')" title="Justify" style="font-size:10px;">JFY</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'justifyLeft\')" title="Align Left">&#8676;</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'justifyCenter\')" title="Align Center">&#8596;</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'justifyRight\')" title="Align Right">&#8677;</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'justifyFull\')" title="Justify" style="font-size:10px;">JFY</button>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\')" title="Bullet List">&bull; &#8226;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertOrderedList\')" title="Numbered List">1. &#8226;</button>' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\');window.app._npBlockFormat(\'insertUnorderedList\')" title="Dash List" style="font-size:10px;">&#8212; List</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'insertUnorderedList\')" title="Bullet List">&bull; &#8226;</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'insertOrderedList\')" title="Numbered List">1. &#8226;</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'insertUnorderedList\');window.app._npBlockFormat(\'insertUnorderedList\')" title="Dash List" style="font-size:10px;">&#8212; List</button>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<button type="button" class="np-tbtn" onclick="window.app._npInsertTable()" title="Insert Table" style="font-size:10px;">&#9638; Table</button>' +
+                        '<button type="button" class="np-tbtn" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npInsertTable()" title="Insert Table" style="font-size:10px;">&#9638; Table</button>' +
                         '<label class="np-tbtn np-file-upload" title="Insert Image">&#128247; Image' +
                             '<input type="file" id="npBlockImageInput" accept=".jpg,.jpeg,.png" multiple onchange="window.app._npBlockInsertImage(event)" style="display:none">' +
                         '</label>' +
                     '</div>' +
                     '<div class="np-tb-group">' +
-                        '<select class="np-select" onchange="window.app._npBlockInsertIcon(this)" title="Insert Icon">' +
+                        '<select class="np-select" onfocus="window.app._saveNpSelection()" onchange="window.app._npBlockInsertIcon(this)" title="Insert Icon">' +
                             '<option value="">&#11088; Icons</option>' +
                             '<optgroup label="Status">' +
                                 '<option value="&#9989;">&#9989; Check Mark</option>' +
@@ -2505,8 +2505,8 @@ class MyNoteBook {
                         '</select>' +
                     '</div>' +
                     '<div class="np-tb-group np-tb-last">' +
-                        '<input type="color" class="np-color-pick" value="#000000" onchange="window.app._npBlockFormat(\'foreColor\', this.value)" title="Text Color">' +
-                        '<button type="button" class="np-tbtn np-tbtn-clear" onclick="window.app._npBlockFormat(\'removeFormat\')" title="Clear Formatting">&#10005;</button>' +
+                        '<input type="color" class="np-color-pick" value="#000000" onmousedown="window.app._saveNpSelection()" onchange="window.app._restoreNpSelection();window.app._npBlockFormat(\'foreColor\', this.value)" title="Text Color">' +
+                        '<button type="button" class="np-tbtn np-tbtn-clear" onmousedown="event.preventDefault();window.app._saveNpSelection()" onclick="window.app._npBlockFormat(\'removeFormat\')" title="Clear Formatting">&#10005;</button>' +
                     '</div>' +
                 '</div>' +
                 '<div class="np-modal-editor" id="npBlockEditor" contenteditable="true" data-placeholder="Start writing your note..."></div>' +
@@ -2667,6 +2667,21 @@ class MyNoteBook {
         document.querySelectorAll('.np-highlight-popup.np-hl-open').forEach(function(p) { p.classList.remove('np-hl-open'); });
     }
 
+    _saveNpSelection() {
+        var sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+            this._npSavedRange = sel.getRangeAt(0).cloneRange();
+        }
+    }
+
+    _restoreNpSelection() {
+        if (this._npSavedRange) {
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(this._npSavedRange);
+        }
+    }
+
     _npGetActiveEditor() {
         var eb = document.getElementById('ebNpEditor');
         if (eb && eb.closest('.eb-overlay')) return eb;
@@ -2678,6 +2693,7 @@ class MyNoteBook {
     _npBlockFormat(command, value) {
         var editor = this._npGetActiveEditor();
         if (editor) editor.focus();
+        this._restoreNpSelection();
         document.execCommand(command, false, value || null);
     }
 
@@ -2848,9 +2864,13 @@ class MyNoteBook {
                 this.hideModal();
                 this.renderBlocks();
                 this.refreshSearchIndex();
+            } else {
+                var errData = await res.json().catch(function(){ return {}; });
+                alert('Failed to save block: ' + (errData.error || res.statusText));
             }
         } catch (err) {
             console.error('Failed to create block:', err);
+            alert('Network error: ' + err.message);
         }
     }
 
@@ -3982,6 +4002,7 @@ class MyNoteBook {
 
     notepadFormat(command, value) {
         document.getElementById('notepadEditor').focus();
+        this._restoreNpSelection();
         document.execCommand(command, false, value || null);
     }
 
