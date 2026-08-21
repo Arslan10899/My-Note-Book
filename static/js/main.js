@@ -660,6 +660,7 @@ class MyNoteBook {
                     '<div class="hd-item-meta">' + this.escapeHtml(r.page_title || '') + (label ? ' · ' + label : '') + '</div>' +
                 '</div></div>';
         }).join('');
+        lucide.createIcons({ nodes: [list] });
     }
 
     populateMsgDropdown(tasks) {
@@ -683,6 +684,7 @@ class MyNoteBook {
                     '<div class="hd-item-meta">' + this.escapeHtml(t.page_title || '') + ' · ' + (statusLabels[ts] || ts) + '</div>' +
                 '</div></div>';
         }).join('');
+        lucide.createIcons({ nodes: [list] });
     }
 
     async refreshNotifDropdown() {
