@@ -1474,7 +1474,7 @@ class MyNoteBook {
         var label = typeLabels[type] || 'Block';
 
         var html = '<div class="eb-overlay" onclick="window.app._closeEditModal()">' +
-            '<div class="eb-modal" onclick="event.stopPropagation()">' +
+            '<div class="eb-modal' + (type === 'notepad' ? ' eb-modal-wide' : '') + '" onclick="event.stopPropagation()">' +
                 '<div class="eb-header">' +
                     '<div class="eb-header-left">' +
                         '<div class="eb-header-title">Edit ' + label + '</div>' +
@@ -2538,7 +2538,8 @@ class MyNoteBook {
 
         this.showModal('New ' + labels[type] + ' Block', modalBody,
             '<button class="btn-modal btn-modal-secondary" onclick="window.app.hideModal()">Cancel</button>' +
-            '<button class="btn-modal btn-modal-primary" onclick="window.app.createBlock(\'' + type + '\')">Add Block</button>'
+            '<button class="btn-modal btn-modal-primary" onclick="window.app.createBlock(\'' + type + '\')">Add Block</button>',
+            type === 'notepad'
         );
         setTimeout(() => {
             const textarea = document.getElementById('newBlockContent');
@@ -2754,7 +2755,8 @@ class MyNoteBook {
         if (type === 'notepad') {
             var editor = document.getElementById('npBlockEditor');
             var content = editor ? editor.innerHTML.trim() : '';
-            if (!content || content === '<br>') return;
+            var stripped = content.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim();
+            if (!stripped) return;
         } else {
             var contentEl = document.getElementById('newBlockContent');
             var content = contentEl ? contentEl.value.trim() : '';
@@ -3351,10 +3353,12 @@ class MyNoteBook {
         window.print();
     }
 
-    showModal(title, body, footer) {
+    showModal(title, body, footer, wide) {
         document.getElementById('modalTitle').textContent = title;
         document.getElementById('modalBody').innerHTML = body;
         document.getElementById('modalFooter').innerHTML = footer;
+        var modalBox = document.querySelector('.modal-box');
+        if (modalBox) modalBox.classList.toggle('modal-wide', !!wide);
         document.getElementById('modalOverlay').classList.remove('hidden');
         this.refreshIcons();
     }
