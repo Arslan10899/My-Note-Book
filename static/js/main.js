@@ -959,6 +959,29 @@ class MyNoteBook {
                 '<div class="block-content" data-block-id="' + block.id + '">' + this.escapeHtml(block.content) + '</div>' +
                 imageHtml +
                 this.renderBlockMeta(block) + '</div>';
+        } else if (block.block_type === 'notepad') {
+            let subjectHtml = '';
+            if (block.subject) {
+                subjectHtml = '<div class="block-subject">📝 ' + this.escapeHtml(block.subject) + '</div>';
+            }
+            let notepadImgHtml = '';
+            if (block.image_path) {
+                var npImgs = [];
+                try { npImgs = JSON.parse(block.image_path); } catch(e) { if (block.image_path) npImgs = [block.image_path]; }
+                if (npImgs.length > 0) {
+                    notepadImgHtml = '<div class="block-images-grid">';
+                    npImgs.forEach(function(img) {
+                        notepadImgHtml += '<div class="block-image-wrapper"><img class="block-image" src="' + img + '" onclick="window.app.showImageModal(\'' + img.replace(/'/g, "\\'") + '\')"></div>';
+                    });
+                    notepadImgHtml += '</div>';
+                }
+            }
+            contentHtml = '<div class="block notepad-block">' +
+                '<div class="block-header">' + typeBadge + '<div class="block-actions">' + viewBtn + editBtn + deleteBtn + '</div></div>' +
+                subjectHtml +
+                '<div class="block-notepad-content" data-block-id="' + block.id + '">' + block.content + '</div>' +
+                notepadImgHtml +
+                this.renderBlockMeta(block) + '</div>';
         } else {
             contentHtml = '<div class="block">' +
                 '<div class="block-header">' + typeBadge + '<div class="block-actions">' + viewBtn + editBtn + deleteBtn + '</div></div>' +
@@ -1049,9 +1072,9 @@ class MyNoteBook {
         if (!block) return;
         var page = this.currentPage || {};
         var type = block.block_type || 'note';
-        var typeColors = { task: '#5856d6', reminder: '#10b981', instruction: '#f59e0b', note: '#6366f1' };
-        var typeIcons = { task: 'check-square', reminder: 'bell', instruction: 'clipboard', note: 'file-text' };
-        var typeLabels = { task: 'Task', reminder: 'Reminder', instruction: 'Instruction', note: 'Note' };
+        var typeColors = { task: '#5856d6', reminder: '#10b981', instruction: '#f59e0b', notepad: '#6366f1', note: '#6366f1' };
+        var typeIcons = { task: 'check-square', reminder: 'bell', instruction: 'clipboard', notepad: 'file-text', note: 'file-text' };
+        var typeLabels = { task: 'Task', reminder: 'Reminder', instruction: 'Instruction', notepad: 'Notepad', note: 'Note' };
         var color = typeColors[type] || '#6366f1';
         var icon = typeIcons[type] || 'file-text';
         var label = typeLabels[type] || 'Note';
@@ -1076,7 +1099,11 @@ class MyNoteBook {
                 '</div>' +
                 '<div class="vb-body">';
 
-        html += '<div class="vb-content-title">' + this.escapeHtml(block.content || 'No title') + '</div>';
+        html += '<div class="vb-content-title">' + (type === 'notepad' ? (block.subject || 'Untitled Notepad') : this.escapeHtml(block.content || 'No title')) + '</div>';
+
+        if (type === 'notepad') {
+            html += '<div class="vb-section"><div class="vb-section-label">Note Content</div><div class="block-notepad-content">' + block.content + '</div></div>';
+        }
 
         if (block.description) {
             html += '<div class="vb-section"><div class="vb-section-label">Description</div><div class="vb-section-text">' + this.escapeHtml(block.description) + '</div></div>';
@@ -1204,12 +1231,18 @@ class MyNoteBook {
         }
         var page = this.currentPage || {};
         var type = block.block_type || 'note';
-        var typeLabels = { task: 'Task', reminder: 'Reminder', instruction: 'Instruction', note: 'Note' };
+        var typeLabels = { task: 'Task', reminder: 'Reminder', instruction: 'Instruction', notepad: 'Notepad', note: 'Note' };
         var label = typeLabels[type] || 'Note';
 
-        var bodyContent = '<h1>' + this.escapeHtml(block.content || 'Untitled') + '</h1>';
-        if (block.description) bodyContent += '<p><strong>Description:</strong> ' + this.escapeHtml(block.description) + '</p>';
-        if (block.subject) bodyContent += '<p><strong>Subject:</strong> ' + this.escapeHtml(block.subject) + '</p>';
+        var bodyContent = '';
+        if (type === 'notepad') {
+            bodyContent = '<h1>' + this.escapeHtml(block.subject || 'Untitled Notepad') + '</h1>';
+            bodyContent += '<div class="block-notepad-content" style="margin-top:16px;">' + block.content + '</div>';
+        } else {
+            bodyContent = '<h1>' + this.escapeHtml(block.content || 'Untitled') + '</h1>';
+        }
+        if (type !== 'notepad' && block.description) bodyContent += '<p><strong>Description:</strong> ' + this.escapeHtml(block.description) + '</p>';
+        if (type !== 'notepad' && block.subject) bodyContent += '<p><strong>Subject:</strong> ' + this.escapeHtml(block.subject) + '</p>';
 
         if (type === 'task') {
             var st = block.task_status || 'pending';
@@ -1391,6 +1424,13 @@ class MyNoteBook {
             });
         });
 
+        document.querySelectorAll('.block-notepad-content[data-block-id]').forEach(el => {
+            el.addEventListener('dblclick', (e) => {
+                const blockId = parseInt(e.target.dataset.blockId);
+                this.startEditingBlock(blockId);
+            });
+        });
+
         document.querySelectorAll('.recurrence-select').forEach(sel => {
             sel.addEventListener('change', (e) => {
                 const blockId = parseInt(e.target.dataset.blockId);
@@ -1425,8 +1465,8 @@ class MyNoteBook {
 
     _openEditModal(block) {
         var type = block.block_type || 'task';
-        var typeColors = { task: '#5856d6', reminder: '#10b981', instruction: '#f59e0b' };
-        var typeLabels = { task: 'Task', reminder: 'Reminder', instruction: 'Instruction' };
+        var typeColors = { task: '#5856d6', reminder: '#10b981', instruction: '#f59e0b', notepad: '#6366f1' };
+        var typeLabels = { task: 'Task', reminder: 'Reminder', instruction: 'Instruction', notepad: 'Notepad' };
         var color = typeColors[type] || '#5856d6';
         var label = typeLabels[type] || 'Block';
 
@@ -1440,11 +1480,53 @@ class MyNoteBook {
                 '</div>' +
                 '<div class="eb-body">';
 
-        html += '<div class="eb-group"><label class="eb-label">Title / Content *</label>' +
-            '<input type="text" class="eb-input" id="ebContent" value="' + this.escapeHtml(block.content || '') + '" placeholder="Enter title..."></div>';
+        if (type === 'notepad') {
+            html += '<div class="eb-group"><label class="eb-label">Title</label>' +
+                '<input type="text" class="eb-input" id="ebContent" value="' + this.escapeHtml(block.subject || '') + '" placeholder="Note title..."></div>';
+            html += '<div class="eb-group"><label class="eb-label">Note Content</label>' +
+                '<div class="np-modal-toolbar">' +
+                    '<div class="np-tb-group">' +
+                        '<select class="np-select" id="ebNpFontFamily" onchange="window.app._npBlockFormat(\'fontName\', this.value)">' +
+                            '<option value="Segoe UI">Font</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Courier New">Courier</option>' +
+                        '</select>' +
+                        '<select class="np-select" id="ebNpFontSize" onchange="window.app._npBlockFormat(\'fontSize\', this.value)">' +
+                            '<option value="3">Size</option><option value="1">Small</option><option value="3">Normal</option><option value="5">Large</option>' +
+                        '</select>' +
+                    '</div>' +
+                    '<div class="np-tb-group">' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'bold\')" title="Bold"><b>B</b></button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'italic\')" title="Italic"><i>I</i></button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'underline\')" title="Underline"><u>U</u></button>' +
+                        '<button type="button" class="np-tbtn np-highlight" onclick="window.app._npBlockFormat(\'hiliteColor\', \'yellow\')" title="Highlight">&#128396;</button>' +
+                    '</div>' +
+                    '<div class="np-tb-group">' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyLeft\')" title="Left">&#8676;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyCenter\')" title="Center">&#8596;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyRight\')" title="Right">&#8677;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\')" title="List">&bull; List</button>' +
+                    '</div>' +
+                    '<div class="np-tb-group">' +
+                        '<label class="np-tbtn np-file-upload" title="Insert Image">&#128247; Image' +
+                            '<input type="file" id="ebNpImageInput" accept=".jpg,.jpeg,.png" multiple onchange="window.app._npBlockInsertImage(event)" style="display:none">' +
+                        '</label>' +
+                        '<select class="np-select" onchange="window.app._npBlockInsertIcon(this)" title="Icons">' +
+                            '<option value="">&#11088; Icons</option><option value="&#9989;">&#9989;</option><option value="&#10060;">&#10060;</option><option value="&#11088;">&#11088;</option><option value="&#128293;">&#128293;</option><option value="&#128205;">&#128205;</option>' +
+                        '</select>' +
+                    '</div>' +
+                    '<div class="np-tb-group np-tb-last">' +
+                        '<input type="color" class="np-color-pick" onchange="window.app._npBlockFormat(\'foreColor\', this.value)" title="Text Color">' +
+                        '<button type="button" class="np-tbtn np-tbtn-clear" onclick="window.app._npBlockFormat(\'removeFormat\')" title="Clear">&#10005;</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="np-modal-editor" id="ebNpEditor" contenteditable="true" data-placeholder="Write your note..."></div>' +
+                '</div>';
+        } else {
+            html += '<div class="eb-group"><label class="eb-label">Title / Content *</label>' +
+                '<input type="text" class="eb-input" id="ebContent" value="' + this.escapeHtml(block.content || '') + '" placeholder="Enter title..."></div>';
 
-        html += '<div class="eb-group"><label class="eb-label">Description</label>' +
-            '<textarea class="eb-textarea" id="ebDescription" rows="3" placeholder="Add details...">' + this.escapeHtml(block.description || '') + '</textarea></div>';
+            html += '<div class="eb-group"><label class="eb-label">Description</label>' +
+                '<textarea class="eb-textarea" id="ebDescription" rows="3" placeholder="Add details...">' + this.escapeHtml(block.description || '') + '</textarea></div>';
+        }
 
         if (type === 'task') {
             var st = block.task_status || 'pending';
@@ -1579,8 +1661,10 @@ class MyNoteBook {
                 '<input type="text" class="eb-input" id="ebRefDetail" value="' + this.escapeHtml(block.ref_detail || '') + '" placeholder="e.g. From manager, email reminder..."></div>';
         }
 
-        html += '<div class="eb-group"><label class="eb-label">Subject</label>' +
-            '<input type="text" class="eb-input" id="ebSubject" value="' + this.escapeHtml(block.subject || '') + '" placeholder="Add subject..."></div>';
+        if (type !== 'notepad') {
+            html += '<div class="eb-group"><label class="eb-label">Subject</label>' +
+                '<input type="text" class="eb-input" id="ebSubject" value="' + this.escapeHtml(block.subject || '') + '" placeholder="Add subject..."></div>';
+        }
 
         var existingImages = [];
         if (block.image_path) {
@@ -1608,6 +1692,10 @@ class MyNoteBook {
         document.body.insertAdjacentHTML('beforeend', html);
         if (typeof lucide !== 'undefined') lucide.createIcons();
         this._ebExistingImages = existingImages;
+        if (type === 'notepad') {
+            var ebEditor = document.getElementById('ebNpEditor');
+            if (ebEditor) ebEditor.innerHTML = block.content || '';
+        }
     }
 
     _ebAddImages(event) {
@@ -1651,9 +1739,16 @@ class MyNoteBook {
         if (!block) return;
         var type = block.block_type;
         var updates = {};
-        updates.content = document.getElementById('ebContent').value.trim() || block.content;
-        updates.description = document.getElementById('ebDescription').value.trim();
-        updates.subject = document.getElementById('ebSubject').value.trim();
+
+        if (type === 'notepad') {
+            var ebEditor = document.getElementById('ebNpEditor');
+            updates.content = ebEditor ? ebEditor.innerHTML.trim() : block.content;
+            updates.subject = document.getElementById('ebContent').value.trim();
+        } else {
+            updates.content = document.getElementById('ebContent').value.trim() || block.content;
+            updates.description = document.getElementById('ebDescription').value.trim();
+            updates.subject = document.getElementById('ebSubject').value.trim();
+        }
 
         if (this._ebExistingImages && this._ebExistingImages.length > 0) {
             updates.image_path = JSON.stringify(this._ebExistingImages);
@@ -2027,11 +2122,12 @@ class MyNoteBook {
             return;
         }
 
-        const labels = { instruction: 'Instruction', task: 'Task', reminder: 'Reminder' };
+        const labels = { instruction: 'Instruction', task: 'Task', reminder: 'Reminder', notepad: 'Notepad' };
         const placeholders = {
             instruction: 'Enter billing rule, guideline, or SOP...',
             task: 'Enter task description...',
-            reminder: 'Enter reminder message...'
+            reminder: 'Enter reminder message...',
+            notepad: 'Start writing...'
         };
 
         let extraFields = '';
@@ -2246,19 +2342,96 @@ class MyNoteBook {
                 '</div>' +
                 '</div>';
         }
+        if (type === 'notepad') {
+            extraFields = '<div class="form-group">' +
+                '<label class="form-label">Subject (Optional)</label>' +
+                '<input type="text" class="modal-input" id="newBlockSubject" placeholder="Note title...">' +
+                '</div>' +
+                '<div class="np-modal-toolbar">' +
+                    '<div class="np-tb-group">' +
+                        '<select class="np-select" id="npBlockFontFamily" onchange="window.app._npBlockFormat(\'fontName\', this.value)">' +
+                            '<option value="Segoe UI">Font</option>' +
+                            '<option value="Arial">Arial</option>' +
+                            '<option value="Georgia">Georgia</option>' +
+                            '<option value="Courier New">Courier</option>' +
+                        '</select>' +
+                        '<select class="np-select" id="npBlockFontSize" onchange="window.app._npBlockFormat(\'fontSize\', this.value)">' +
+                            '<option value="3">Size</option>' +
+                            '<option value="1">Small</option>' +
+                            '<option value="3">Normal</option>' +
+                            '<option value="5">Large</option>' +
+                        '</select>' +
+                    '</div>' +
+                    '<div class="np-tb-group">' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'bold\')" title="Bold"><b>B</b></button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'italic\')" title="Italic"><i>I</i></button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'underline\')" title="Underline"><u>U</u></button>' +
+                        '<button type="button" class="np-tbtn np-highlight" onclick="window.app._npBlockFormat(\'hiliteColor\', \'yellow\')" title="Highlight">&#128396;</button>' +
+                    '</div>' +
+                    '<div class="np-tb-group">' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyLeft\')" title="Left">&#8676;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyCenter\')" title="Center">&#8596;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'justifyRight\')" title="Right">&#8677;</button>' +
+                        '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'insertUnorderedList\')" title="List">&bull; List</button>' +
+                    '</div>' +
+                    '<div class="np-tb-group">' +
+                        '<label class="np-tbtn np-file-upload" title="Insert Image">&#128247; Image' +
+                            '<input type="file" id="npBlockImageInput" accept=".jpg,.jpeg,.png" multiple onchange="window.app._npBlockInsertImage(event)" style="display:none">' +
+                        '</label>' +
+                        '<select class="np-select" onchange="window.app._npBlockInsertIcon(this)" title="Icons">' +
+                            '<option value="">&#11088; Icons</option>' +
+                            '<option value="&#9989;">&#9989;</option>' +
+                            '<option value="&#10060;">&#10060;</option>' +
+                            '<option value="&#11088;">&#11088;</option>' +
+                            '<option value="&#128293;">&#128293;</option>' +
+                            '<option value="&#128205;">&#128205;</option>' +
+                        '</select>' +
+                    '</div>' +
+                    '<div class="np-tb-group np-tb-last">' +
+                        '<input type="color" class="np-color-pick" onchange="window.app._npBlockFormat(\'foreColor\', this.value)" title="Text Color">' +
+                        '<button type="button" class="np-tbtn np-tbtn-clear" onclick="window.app._npBlockFormat(\'removeFormat\')" title="Clear">&#10005;</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="np-modal-editor" id="npBlockEditor" contenteditable="true" data-placeholder="Start writing your note..."></div>' +
+                '<div class="form-group" style="margin-top:8px;">' +
+                '<label class="form-label">Screenshot / Image (Optional)</label>' +
+                '<div class="image-upload-area" id="imageUploadArea">' +
+                '<input type="file" id="imageFileInput" accept="image/*" style="display:none">' +
+                '<div class="image-upload-placeholder" id="imageUploadPlaceholder">' +
+                '<span class="upload-icon">🖼️</span>' +
+                '<span>Click to browse, or paste (Ctrl+V), or drag & drop</span>' +
+                '</div>' +
+                '<div class="image-preview-container hidden" id="imagePreviewContainer">' +
+                '<img class="image-preview" id="imagePreview">' +
+                '<button type="button" class="btn-remove-image" id="btnRemoveImage">✕ Remove</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+        }
 
-        this.showModal('New ' + labels[type] + ' Block',
-            '<div class="form-group">' +
-            '<label class="form-label">Content</label>' +
-            '<textarea class="modal-input" id="newBlockContent" rows="3" placeholder="' + placeholders[type] + '" style="resize: vertical;"></textarea>' +
-            '</div>' + extraFields,
+        var modalBody = '';
+        if (type === 'notepad') {
+            modalBody = extraFields;
+        } else {
+            modalBody = '<div class="form-group">' +
+                '<label class="form-label">Content</label>' +
+                '<textarea class="modal-input" id="newBlockContent" rows="3" placeholder="' + placeholders[type] + '" style="resize: vertical;"></textarea>' +
+                '</div>' + extraFields;
+        }
+
+        this.showModal('New ' + labels[type] + ' Block', modalBody,
             '<button class="btn-modal btn-modal-secondary" onclick="window.app.hideModal()">Cancel</button>' +
             '<button class="btn-modal btn-modal-primary" onclick="window.app.createBlock(\'' + type + '\')">Add Block</button>'
         );
         setTimeout(() => {
             const textarea = document.getElementById('newBlockContent');
-            if (textarea) textarea.focus();
-            if (type === 'instruction' || type === 'task' || type === 'reminder') {
+            if (type === 'notepad') {
+                var npEditor = document.getElementById('npBlockEditor');
+                if (npEditor) npEditor.focus();
+            } else {
+                if (textarea) textarea.focus();
+            }
+            if (type === 'instruction' || type === 'task' || type === 'reminder' || type === 'notepad') {
                 this.initImageUpload();
             }
             if (type === 'task' || type === 'reminder') {
@@ -2367,9 +2540,69 @@ class MyNoteBook {
         return '';
     }
 
+    _npBlockFormat(command, value) {
+        var editor = document.getElementById('npBlockEditor');
+        if (editor) editor.focus();
+        document.execCommand(command, false, value || null);
+    }
+
+    _npBlockInsertIcon(sel) {
+        if (sel.value) {
+            var editor = document.getElementById('npBlockEditor');
+            if (editor) editor.focus();
+            document.execCommand('insertText', false, sel.value);
+            sel.value = '';
+        }
+    }
+
+    _npBlockInsertImage(event) {
+        var files = event.target.files;
+        if (!files || files.length === 0) return;
+        var validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        var self = this;
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            if (validTypes.indexOf(file.type) === -1) continue;
+            (function(f) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var editor = document.getElementById('npBlockEditor');
+                    if (editor) {
+                        editor.focus();
+                        var sel = window.getSelection();
+                        var range = sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
+                        if (!range || !editor.contains(range.commonAncestorContainer)) {
+                            range = document.createRange();
+                            range.selectNodeContents(editor);
+                            range.collapse(false);
+                        }
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.cssText = 'max-width:200px;height:auto;border-radius:6px;margin:6px;display:block;';
+                        range.deleteContents();
+                        range.insertNode(img);
+                        range.setStartAfter(img);
+                        range.collapse(true);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                };
+                reader.readAsDataURL(f);
+            })(file);
+        }
+        event.target.value = '';
+    }
+
     async createBlock(type) {
-        const content = document.getElementById('newBlockContent').value.trim();
-        if (!content) return;
+        if (type === 'notepad') {
+            var editor = document.getElementById('npBlockEditor');
+            var content = editor ? editor.innerHTML.trim() : '';
+            if (!content || content === '<br>') return;
+        } else {
+            var contentEl = document.getElementById('newBlockContent');
+            var content = contentEl ? contentEl.value.trim() : '';
+            if (!content) return;
+        }
 
         const payload = {
             page_id: this.currentPage.id,
@@ -2433,6 +2666,15 @@ class MyNoteBook {
             if (description) payload.description = description.value.trim();
             if (refDetail) payload.ref_detail = refDetail.value.trim();
             if (subject) payload.subject = subject.value.trim();
+        }
+
+        if (type === 'notepad') {
+            const subject = document.getElementById('newBlockSubject');
+            if (subject) payload.subject = subject.value.trim();
+            if (this._imageData) {
+                const imagePath = await this.uploadImageAndGetPath();
+                if (imagePath) payload.image_path = imagePath;
+            }
         }
 
         try {
@@ -2529,7 +2771,14 @@ class MyNoteBook {
             let score = 0;
             let matchedField = '';
 
-            const s1 = matchScore(block.content);
+            var blockContent = block.content || '';
+            if (block.block_type === 'notepad') {
+                var tmp = document.createElement('div');
+                tmp.innerHTML = blockContent;
+                blockContent = tmp.textContent || tmp.innerText || '';
+            }
+
+            const s1 = matchScore(blockContent);
             if (s1 > score) { score = s1; matchedField = 'content'; }
 
             const s2 = matchScore(block.subject);
@@ -2574,6 +2823,11 @@ class MyNoteBook {
                     if (block.is_active === 0 || block.is_active === '0') tags.push('Not Active');
                     if (block.ref_type && block.ref_type !== 'none') tags.push(block.ref_type);
                     meta = tags.length > 0 ? tags.join(' | ') : 'Normal';
+                } else if (block.block_type === 'notepad') {
+                    icon = 'cil-file';
+                    typeLabel = 'Notepad';
+                    title = block.subject || 'Untitled Notepad';
+                    meta = 'Rich Note';
                 }
 
                 results.push({
@@ -2585,7 +2839,7 @@ class MyNoteBook {
                     score: score,
                     pageId: block.page_id,
                     matchedField: matchedField,
-                    matchedText: matchedField === 'subject' ? block.subject : (matchedField === 'ref_detail' ? block.ref_detail : block.content)
+                    matchedText: matchedField === 'subject' ? block.subject : (matchedField === 'ref_detail' ? block.ref_detail : (block.block_type === 'notepad' ? blockContent : block.content))
                 });
             }
         }
@@ -2810,9 +3064,9 @@ class MyNoteBook {
         document.getElementById('detailView').classList.remove('hidden');
 
         const now = new Date();
-        const typeLabels = { instruction: 'INSTRUCTION / GUIDELINE', task: 'TASK', reminder: 'REMINDER' };
-        const typeColors = { instruction: '#A2B1CC', task: '#D2D09E', reminder: '#EBA07B' };
-        const typeIcons = { instruction: 'cil-book', task: 'cil-check-circle', reminder: 'cil-bell' };
+        const typeLabels = { instruction: 'INSTRUCTION / GUIDELINE', task: 'TASK', reminder: 'REMINDER', notepad: 'NOTEPAD' };
+        const typeColors = { instruction: '#A2B1CC', task: '#D2D09E', reminder: '#EBA07B', notepad: '#6366f1' };
+        const typeIcons = { instruction: 'cil-book', task: 'cil-check-circle', reminder: 'cil-bell', notepad: 'cil-file' };
         const refIcons = { email: 'cil-envelope-closed', call: 'cil-phone', message: 'cil-chat-bubble', meeting: 'cil-people', document: 'cil-file' };
         const refLabels = { email: 'Email', call: 'Call', message: 'Message', meeting: 'Meeting', document: 'Document' };
 
@@ -2883,10 +3137,17 @@ class MyNoteBook {
 
         html += '</div>';
 
-        html += '<div class="doc-content-section">' +
-            '<div class="doc-content-label">Content / Details</div>' +
-            '<div class="doc-content-box">' + this.escapeHtml(block.content).replace(/\n/g, '<br>') + '</div>' +
-        '</div>';
+        if (block.block_type === 'notepad') {
+            html += '<div class="doc-content-section">' +
+                '<div class="doc-content-label">Note Content</div>' +
+                '<div class="doc-content-box block-notepad-content">' + block.content + '</div>' +
+            '</div>';
+        } else {
+            html += '<div class="doc-content-section">' +
+                '<div class="doc-content-label">Content / Details</div>' +
+                '<div class="doc-content-box">' + this.escapeHtml(block.content).replace(/\n/g, '<br>') + '</div>' +
+            '</div>';
+        }
 
         if (block.image_path) {
             var imgPaths = [];

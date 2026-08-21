@@ -580,7 +580,14 @@ def search():
         (search_term,)
     ).fetchall()
 
-    results = [dict(r) for r in pages] + [dict(r) for r in instruction_blocks] + [dict(r) for r in tasks] + [dict(r) for r in reminders]
+    notepads = conn.execute(
+        """SELECT b.id, b.content, b.subject, p.title as page_title, 'notepad' as result_type
+           FROM blocks b JOIN pages p ON b.page_id = p.id
+           WHERE b.block_type = 'notepad' AND (b.content LIKE ? OR b.subject LIKE ?)""",
+        (search_term, search_term)
+    ).fetchall()
+
+    results = [dict(r) for r in pages] + [dict(r) for r in instruction_blocks] + [dict(r) for r in tasks] + [dict(r) for r in reminders] + [dict(r) for r in notepads]
     conn.close()
     return jsonify(results)
 
