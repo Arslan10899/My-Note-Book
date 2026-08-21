@@ -101,12 +101,21 @@ def _migrate_db():
     if 'requested_at' not in user_cols:
         cursor.execute("ALTER TABLE users ADD COLUMN requested_at TEXT DEFAULT ''")
 
+    leftover = cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='blocks_old'").fetchone()
+    if leftover:
+        current_check = cursor.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='blocks'").fetchone()
+        if current_check and 'notepad' not in current_check[0]:
+            cursor.execute("PRAGMA foreign_keys = OFF")
+            cursor.execute("DROP TABLE IF EXISTS blocks")
+            cursor.execute("ALTER TABLE blocks_old RENAME TO blocks")
+        else:
+            cursor.execute("DROP TABLE blocks_old")
+
     try:
         create_sql = cursor.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='blocks'").fetchone()
         if create_sql and 'notepad' not in create_sql[0]:
             cols = [r[1] for r in cursor.execute("PRAGMA table_info(blocks)").fetchall()]
             cursor.execute("PRAGMA foreign_keys = OFF")
-            cursor.execute("BEGIN TRANSACTION")
             cursor.execute("ALTER TABLE blocks RENAME TO blocks_old")
             cursor.execute("""CREATE TABLE blocks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -137,24 +146,15 @@ def _migrate_db():
             cursor.execute("INSERT INTO blocks(" + cols_str + ") SELECT " + cols_str + " FROM blocks_old")
             cursor.execute("DROP TABLE blocks_old")
             cursor.execute("PRAGMA foreign_keys = ON")
-            conn.commit()
-    except Exception as e:
-        try:
-            conn.rollback()
-        except Exception:
-            pass
+    except Exception:
         try:
             cursor.execute("PRAGMA foreign_keys = ON")
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='blocks_old'")
             if cursor.fetchone():
                 cursor.execute("DROP TABLE IF EXISTS blocks")
                 cursor.execute("ALTER TABLE blocks_old RENAME TO blocks")
-                conn.commit()
         except Exception:
             pass
-    except Exception:
-        pass
-
     conn.commit()
     conn.close()
 
