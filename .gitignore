@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+intellinote.db
+intellinote.db.bak
+static/uploads/
+template/
+.env
