@@ -3976,6 +3976,29 @@ class MyNoteBook {
         }
     }
 
+    notepadInsertTable() {
+        var rows = prompt('Number of rows:', '3');
+        var cols = prompt('Number of columns:', '3');
+        if (!rows || !cols) return;
+        rows = parseInt(rows); cols = parseInt(cols);
+        if (isNaN(rows) || isNaN(cols) || rows < 1 || cols < 1) return;
+        var table = '<table style="border-collapse:collapse;width:100%;margin:8px 0;">';
+        for (var r = 0; r < rows; r++) {
+            table += '<tr>';
+            for (var c = 0; c < cols; c++) {
+                if (r === 0) table += '<th style="border:1px solid #ccc;padding:6px 10px;background:#f0f0f5;font-weight:600;">Header ' + (c+1) + '</th>';
+                else table += '<td style="border:1px solid #ccc;padding:6px 10px;">&nbsp;</td>';
+            }
+            table += '</tr>';
+        }
+        table += '</table><p><br></p>';
+        var editor = document.getElementById('notepadEditor');
+        if (editor) {
+            editor.focus();
+            document.execCommand('insertHTML', false, table);
+        }
+    }
+
     notepadInsertImage(event) {
         var files = event.target.files;
         if (!files || files.length === 0) return;
