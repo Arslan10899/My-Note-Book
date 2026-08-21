@@ -182,6 +182,9 @@ class MyNoteBook {
         });
 
         document.addEventListener('click', (e) => {
+            if (!e.target.closest('.np-highlight-dropdown')) {
+                this._closeAllHlPopups();
+            }
             if (!e.target.closest('.header-search')) {
                 document.getElementById('searchResults').classList.remove('visible');
             }
@@ -1499,16 +1502,16 @@ class MyNoteBook {
                         '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'underline\')" title="Underline"><u>U</u></button>' +
                         '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'strikeThrough\')" title="Strikethrough"><s>S</s></button>' +
                         '<div class="np-highlight-dropdown">' +
-                            '<button type="button" class="np-tbtn np-highlight-btn" title="Highlight Color">&#128396;</button>' +
+                            '<button type="button" class="np-tbtn np-highlight-btn" onmousedown="event.preventDefault();window.app._toggleHlPopup(this)" title="Highlight Color">&#128396;</button>' +
                             '<div class="np-highlight-popup">' +
-                                '<div class="np-hl-swatch" style="background:#fef08a" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fef08a\')" title="Yellow"></div>' +
-                                '<div class="np-hl-swatch" style="background:#bbf7d0" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#bbf7d0\')" title="Green"></div>' +
-                                '<div class="np-hl-swatch" style="background:#bfdbfe" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#bfdbfe\')" title="Blue"></div>' +
-                                '<div class="np-hl-swatch" style="background:#fbcfe8" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fbcfe8\')" title="Pink"></div>' +
-                                '<div class="np-hl-swatch" style="background:#fed7aa" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fed7aa\')" title="Orange"></div>' +
-                                '<div class="np-hl-swatch" style="background:#ddd6fe" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#ddd6fe\')" title="Purple"></div>' +
-                                '<div class="np-hl-swatch" style="background:#e2e8f0" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#e2e8f0\')" title="Gray"></div>' +
-                                '<div class="np-hl-swatch" style="background:#ffffff;border:1px solid #ccc" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#ffffff\')" title="Remove"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fef08a" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fef08a\');window.app._closeAllHlPopups()" title="Yellow"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bbf7d0" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#bbf7d0\');window.app._closeAllHlPopups()" title="Green"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bfdbfe" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#bfdbfe\');window.app._closeAllHlPopups()" title="Blue"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fbcfe8" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fbcfe8\');window.app._closeAllHlPopups()" title="Pink"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fed7aa" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fed7aa\');window.app._closeAllHlPopups()" title="Orange"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ddd6fe" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#ddd6fe\');window.app._closeAllHlPopups()" title="Purple"></div>' +
+                                '<div class="np-hl-swatch" style="background:#e2e8f0" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#e2e8f0\');window.app._closeAllHlPopups()" title="Gray"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ffffff;border:1px solid #ccc" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#ffffff\');window.app._closeAllHlPopups()" title="Remove"></div>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
@@ -2410,16 +2413,16 @@ class MyNoteBook {
                         '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'underline\')" title="Underline (Ctrl+U)"><u>U</u></button>' +
                         '<button type="button" class="np-tbtn" onclick="window.app._npBlockFormat(\'strikeThrough\')" title="Strikethrough"><s>S</s></button>' +
                         '<div class="np-highlight-dropdown">' +
-                            '<button type="button" class="np-tbtn np-highlight-btn" title="Highlight Color">&#128396;</button>' +
+                            '<button type="button" class="np-tbtn np-highlight-btn" onmousedown="event.preventDefault();window.app._toggleHlPopup(this)" title="Highlight Color">&#128396;</button>' +
                             '<div class="np-highlight-popup">' +
-                                '<div class="np-hl-swatch" style="background:#fef08a" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fef08a\')" title="Yellow"></div>' +
-                                '<div class="np-hl-swatch" style="background:#bbf7d0" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#bbf7d0\')" title="Green"></div>' +
-                                '<div class="np-hl-swatch" style="background:#bfdbfe" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#bfdbfe\')" title="Blue"></div>' +
-                                '<div class="np-hl-swatch" style="background:#fbcfe8" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fbcfe8\')" title="Pink"></div>' +
-                                '<div class="np-hl-swatch" style="background:#fed7aa" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#fed7aa\')" title="Orange"></div>' +
-                                '<div class="np-hl-swatch" style="background:#ddd6fe" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#ddd6fe\')" title="Purple"></div>' +
-                                '<div class="np-hl-swatch" style="background:#e2e8f0" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#e2e8f0\')" title="Gray"></div>' +
-                                '<div class="np-hl-swatch" style="background:#ffffff;border:1px solid #ccc" onclick="window.app._npBlockFormat(\'hiliteColor\',\'#ffffff\')" title="Remove"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fef08a" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fef08a\');window.app._closeAllHlPopups()" title="Yellow"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bbf7d0" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#bbf7d0\');window.app._closeAllHlPopups()" title="Green"></div>' +
+                                '<div class="np-hl-swatch" style="background:#bfdbfe" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#bfdbfe\');window.app._closeAllHlPopups()" title="Blue"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fbcfe8" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fbcfe8\');window.app._closeAllHlPopups()" title="Pink"></div>' +
+                                '<div class="np-hl-swatch" style="background:#fed7aa" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#fed7aa\');window.app._closeAllHlPopups()" title="Orange"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ddd6fe" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#ddd6fe\');window.app._closeAllHlPopups()" title="Purple"></div>' +
+                                '<div class="np-hl-swatch" style="background:#e2e8f0" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#e2e8f0\');window.app._closeAllHlPopups()" title="Gray"></div>' +
+                                '<div class="np-hl-swatch" style="background:#ffffff;border:1px solid #ccc" onmousedown="event.preventDefault();window.app._npBlockFormat(\'hiliteColor\',\'#ffffff\');window.app._closeAllHlPopups()" title="Remove"></div>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
@@ -2652,6 +2655,15 @@ class MyNoteBook {
             console.error('Image upload failed:', err);
         }
         return '';
+    }
+
+    _toggleHlPopup(btn) {
+        var popup = btn.nextElementSibling;
+        if (popup) popup.classList.toggle('np-hl-open');
+    }
+
+    _closeAllHlPopups() {
+        document.querySelectorAll('.np-highlight-popup.np-hl-open').forEach(function(p) { p.classList.remove('np-hl-open'); });
     }
 
     _npGetActiveEditor() {

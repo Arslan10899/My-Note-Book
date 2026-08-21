@@ -527,8 +527,7 @@ body.sidebar-collapsed .top-bar-brand { opacity: 1; max-width: 300px; pointer-ev
 .np-highlight-dropdown { position: relative; display: inline-block; }
 .np-highlight-btn { position: relative; }
 .np-highlight-popup { display: none; position: absolute; top: 100%; left: 0; z-index: 1000; background: var(--cui-body-bg); border: 1.5px solid var(--cui-border-color); border-radius: 8px; padding: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 160px; }
-.np-highlight-dropdown:hover .np-highlight-popup,
-.np-highlight-popup:hover { display: flex; flex-wrap: wrap; gap: 4px; }
+.np-highlight-popup.np-hl-open { display: flex; flex-wrap: wrap; gap: 4px; }
 .np-hl-swatch { width: 22px; height: 22px; border-radius: 4px; cursor: pointer; border: 1.5px solid rgba(0,0,0,0.1); transition: 0.15s; flex-shrink: 0; }
 .np-hl-swatch:hover { transform: scale(1.25); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
 .np-file-upload { display: inline-flex; align-items: center; }
