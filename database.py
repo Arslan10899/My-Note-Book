@@ -40,7 +40,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS blocks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             page_id INTEGER NOT NULL,
-            block_type TEXT CHECK(block_type IN ('instruction', 'task', 'reminder')),
+            block_type TEXT CHECK(block_type IN ('instruction', 'task', 'reminder', 'notepad')),
             content TEXT NOT NULL,
             subject TEXT DEFAULT '',
             status TEXT DEFAULT 'pending',
@@ -100,6 +100,45 @@ def _migrate_db():
         cursor.execute("ALTER TABLE users ADD COLUMN status TEXT DEFAULT 'approved'")
     if 'requested_at' not in user_cols:
         cursor.execute("ALTER TABLE users ADD COLUMN requested_at TEXT DEFAULT ''")
+
+    try:
+        create_sql = cursor.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='blocks'").fetchone()
+        if create_sql and 'notepad' not in create_sql[0]:
+            cols = [r[1] for r in cursor.execute("PRAGMA table_info(blocks)").fetchall()]
+            all_cols = ','.join(cols)
+            cursor.execute("CREATE TABLE blocks_new AS SELECT * FROM blocks")
+            cursor.execute("DROP TABLE blocks")
+            cursor.execute("""CREATE TABLE blocks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                page_id INTEGER NOT NULL,
+                block_type TEXT CHECK(block_type IN ('instruction', 'task', 'reminder', 'notepad')),
+                content TEXT NOT NULL,
+                subject TEXT DEFAULT '',
+                status TEXT DEFAULT 'pending',
+                due_date TEXT,
+                recurrence TEXT,
+                ref_date TEXT,
+                ref_type TEXT DEFAULT 'none',
+                ref_detail TEXT DEFAULT '',
+                priority TEXT DEFAULT 'normal',
+                is_active INTEGER DEFAULT 1,
+                end_date TEXT,
+                image_path TEXT DEFAULT '',
+                task_priority TEXT DEFAULT 'medium',
+                category TEXT DEFAULT 'general',
+                description TEXT DEFAULT '',
+                task_status TEXT DEFAULT 'pending',
+                reminder_time TEXT DEFAULT '',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY(page_id) REFERENCES pages(id) ON DELETE CASCADE
+            )""")
+            insert_cols = [c for c in cols if c != 'id']
+            cols_str = ','.join(insert_cols)
+            cursor.execute("INSERT INTO blocks(" + cols_str + ") SELECT " + cols_str + " FROM blocks_new")
+            cursor.execute("DROP TABLE blocks_new")
+    except Exception:
+        pass
+
     conn.commit()
     conn.close()
 
