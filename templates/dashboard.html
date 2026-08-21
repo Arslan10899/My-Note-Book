@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>NoteBook By Arslan</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/coreui/assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/coreui/assets/favicon/favicon-16x16.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="/static/coreui/js/config.js"></script>
+    <script src="/static/coreui/js/color-modes.js"></script>
+    <link href="/static/coreui/css/style.min.css" rel="stylesheet">
+    <link href="/static/coreui/vendors/@coreui/icons/css/brand.min.css" rel="stylesheet">
+    <link href="/static/coreui/vendors/@coreui/icons/css/free.min.css" rel="stylesheet">
+    <link href="/static/coreui/vendors/@coreui/icons/css/flag.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar sidebar-dark sidebar-fixed border-end" id="sidebar">
+        <div class="sidebar-header border-bottom">
+            <div class="sidebar-brand me-auto" id="appLogo" style="cursor:pointer;">
+                <i class="cib-anaconda sidebar-brand-icon" style="font-size:28px;"></i>
+                <span class="sidebar-brand-full" style="font-size:14px;font-weight:800;letter-spacing:-0.3px;">NoteBook</span>
+            </div>
+            <button class="btn-close btn-close-white d-lg-none" type="button" aria-label="Close" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()"></button>
+        </div>
+        <ul class="sidebar-nav" data-coreui="navigation" data-simplebar>
+            <li class="nav-title">Workspace</li>
+            <li class="nav-item" id="btnDashboard">
+                <a class="nav-link" href="#">
+                    <i data-lucide="layout-dashboard" class="nav-icon"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item" id="btnPortal">
+                <a class="nav-link" href="#">
+                    <i data-lucide="external-link" class="nav-icon"></i>
+                    <span>Portal</span>
+                </a>
+            </li>
+            <li class="nav-item" id="btnNotepad">
+                <a class="nav-link" href="#">
+                    <i data-lucide="edit-3" class="nav-icon"></i>
+                    <span>Notepad</span>
+                </a>
+            </li>
+            <li class="nav-item" id="btnPages">
+                <a class="nav-link" href="#">
+                    <i data-lucide="layers" class="nav-icon"></i>
+                    <span>Pages</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer border-top">
+            <button class="btn-logout-sidebar" id="btnSidebarLogout" title="Logout">
+                <i data-lucide="log-out"></i>
+                <span class="sidebar-logout-text">Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MOBILE OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper d-flex flex-column min-vh-100">
+        <!-- HEADER -->
+        <header class="header header-sticky p-0">
+            <div class="container-fluid border-bottom px-4">
+                <button class="header-toggler" type="button" id="btnSidebarToggle">
+                    <i data-lucide="menu" style="width:20px;height:20px;"></i>
+                </button>
+                <div class="top-bar-brand" id="topBarBrand">
+                    <i class="cib-anaconda" style="font-size:22px;margin-right:8px;color:#fff;"></i>
+                    <span class="top-bar-title">NoteBook | By Arslan</span>
+                </div>
+                <ul class="header-nav ms-auto">
+                    <!-- SEARCH -->
+                    <li class="nav-item header-search" id="headerSearchWrap">
+                        <i data-lucide="search" class="header-search-icon"></i>
+                        <input type="text" class="header-search-input" id="searchInput" placeholder="Search notes, tasks, rules..." autocomplete="off">
+                        <div class="search-results" id="searchResults"></div>
+                    </li>
+                    <!-- THEME TOGGLE -->
+                    <li class="nav-item dropdown">
+                        <button class="btn btn-link nav-link py-2 px-2 d-flex align-items-center" type="button" id="btnThemeToggle" title="Toggle theme">
+                            <i data-lucide="sun" id="themeIcon" style="width:20px;height:20px;"></i>
+                        </button>
+                    </li>
+                    <!-- NOTIFICATIONS -->
+                    <li class="nav-item dropdown" id="notifWrap">
+                        <button class="btn btn-link nav-link py-2 px-2 d-flex align-items-center" type="button" id="btnNotifications" title="Upcoming Reminders">
+                            <i data-lucide="bell" style="width:20px;height:20px;"></i>
+                            <span class="header-badge" id="notifBadge">0</span>
+                        </button>
+                        <div class="header-dropdown hidden" id="notifDropdown">
+                            <div class="hd-header">Upcoming Reminders</div>
+                            <div class="hd-list" id="notifList"></div>
+                        </div>
+                    </li>
+                    <!-- MESSAGES / TASKS -->
+                    <li class="nav-item dropdown" id="msgWrap">
+                        <button class="btn btn-link nav-link py-2 px-2 d-flex align-items-center" type="button" id="btnMessages" title="Today's Tasks">
+                            <i data-lucide="message-circle" style="width:20px;height:20px;"></i>
+                            <span class="header-badge" id="msgBadge">0</span>
+                        </button>
+                        <div class="header-dropdown hidden" id="msgDropdown">
+                            <div class="hd-header">Today's Tasks</div>
+                            <div class="hd-list" id="msgList"></div>
+                        </div>
+                    </li>
+                    <!-- ADMIN USERS (hidden by default) -->
+                    <li class="nav-item">
+                        <button class="btn btn-link nav-link py-2 px-2 d-flex align-items-center" type="button" id="btnAdminUsers" title="Manage Users" style="display:none;">
+                            <i data-lucide="users" style="width:20px;height:20px;"></i>
+                            <span class="header-badge admin-badge" id="adminBadge">0</span>
+                        </button>
+                    </li>
+                </ul>
+                <ul class="header-nav">
+                    <li class="nav-item py-1">
+                        <div class="vr h-100 mx-2 text-body text-opacity-75"></div>
+                    </li>
+                    <!-- PROFILE -->
+                    <li class="nav-item dropdown" id="profileArea">
+                        <button class="btn btn-link nav-link py-0 d-flex align-items-center" type="button" id="profileTrigger">
+                            <div class="avatar avatar-md" id="profileAvatar">
+                                <img src="" alt="" id="profileAvatarImg" class="avatar-img" style="display:none;">
+                                <span class="avatar-initials" id="profileAvatarInitial" style="display:flex;align-items:center;justify-content:center;background:var(--cui-primary);color:#fff;font-size:12px;font-weight:700;">A</span>
+                            </div>
+                            <div class="profile-info">
+                                <span class="profile-name" id="profileName">Admin</span>
+                                <span class="profile-role" id="profileRole">Admin</span>
+                            </div>
+                            <i data-lucide="chevron-down" class="profile-chevron"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end profile-dropdown" id="profileDropdown">
+                            <button class="dropdown-item" id="btnProfile">
+                                <i data-lucide="user"></i> Profile
+                            </button>
+                            <button class="dropdown-item" id="btnProfileUsers" style="display:none;">
+                                <i data-lucide="users"></i> Manage Users
+                            </button>
+                            <button class="dropdown-item" id="btnBackup" style="display:none;">
+                                <i data-lucide="database"></i> Backup & Restore
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item text-danger" id="btnLogout">
+                                <i data-lucide="log-out"></i> Logout
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <div class="body flex-grow-1" id="mainContent">
+            <div class="container-lg px-4">
+
+                <!-- ================= DASHBOARD VIEW ================= -->
+                <div class="dashboard-view" id="dashboardView">
+                    <div class="hero-banner">
+                        <div class="hero-left">
+                            <p class="dashboard-date" id="dashboardDate"></p>
+                            <div class="hero-timezones" id="heroTimezones"></div>
+                        </div>
+                    </div>
+                    <div class="section-header">
+                        <div class="section-title">Today's Tasks</div>
+                    </div>
+                    <div class="notes-grid" id="todayTasksList"></div>
+                    <div class="section-header" style="margin-top:28px;">
+                        <div class="section-title">Upcoming Reminders</div>
+                    </div>
+                    <div class="notes-grid" id="upcomingReminders"></div>
+                </div>
+
+                <!-- ================= PORTAL VIEW ================= -->
+                <div class="portal-view hidden" id="portalView">
+                    <div class="np-header">
+                        <h2 class="np-title"><i data-lucide="external-link"></i> Portal</h2>
+                        <button class="np-btn-create" id="btnAddPortalLink"><i data-lucide="plus"></i> Add Link</button>
+                    </div>
+                    <div class="np-grid" id="portalLinks"></div>
+                </div>
+
+                <!-- ================= PAGES VIEW ================= -->
+                <div class="pages-view hidden" id="pagesView">
+                    <div class="np-header">
+                        <h2 class="np-title"><i data-lucide="layers"></i> Pages</h2>
+                        <button class="np-btn-create" id="btnAddPageFromPages"><i data-lucide="plus"></i> New Page</button>
+                    </div>
+                    <div class="np-grid" id="pagesGrid"></div>
+                </div>
+
+                <!-- ================= NOTEPAD VIEW ================= -->
+                <div class="notepad-view hidden" id="notepadView">
+                    <!-- NOTEPAD DASHBOARD -->
+                    <div id="notepadDashboard">
+                        <div class="np-header">
+                            <h2 class="np-title"><i data-lucide="edit-3"></i> Notepad</h2>
+                            <button class="np-btn-create" id="btnNotepadNew"><i data-lucide="plus"></i> Create New Note</button>
+                        </div>
+                        <div class="np-grid" id="notepadNotesGrid"></div>
+                    </div>
+
+                    <!-- NOTEPAD EDITOR -->
+                    <div class="np-editor-wrap hidden" id="notepadEditorView">
+                        <div class="np-editor-top">
+                            <div class="np-editor-left">
+                                <button class="np-btn-back" id="btnNotepadBack"><i data-lucide="arrow-left"></i> Back</button>
+                                <input type="text" id="notepadTitle" class="np-title-input" placeholder="Note Title...">
+                            </div>
+                            <div class="np-editor-actions">
+                                <button class="np-btn-print" id="notepadPrintBtn"><i data-lucide="printer"></i> Print / PDF</button>
+                                <button class="np-btn-edit" id="notepadEditBtn"><i data-lucide="edit-3"></i> Edit</button>
+                                <button class="np-btn-save" id="notepadSaveBtn"><i data-lucide="save"></i> Save</button>
+                            </div>
+                        </div>
+                        <div class="np-toolbar" id="notepadToolbar">
+                            <div class="np-tb-group">
+                                <select class="np-select" id="notepadFontFamily" onchange="window.app.notepadFormat('fontName', this.value)">
+                                    <option value="Segoe UI">Font</option>
+                                    <option value="Arial">Arial</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Courier New">Courier</option>
+                                </select>
+                                <select class="np-select" id="notepadFontSize" onchange="window.app.notepadFormat('fontSize', this.value)">
+                                    <option value="3">Size</option>
+                                    <option value="1">Small</option>
+                                    <option value="3">Normal</option>
+                                    <option value="5">Large</option>
+                                </select>
+                            </div>
+                            <div class="np-tb-group">
+                                <button class="np-tbtn" onclick="window.app.notepadFormat('bold')" title="Bold"><b>B</b></button>
+                                <button class="np-tbtn" onclick="window.app.notepadFormat('italic')" title="Italic"><i>I</i></button>
+                                <button class="np-tbtn" onclick="window.app.notepadFormat('underline')" title="Underline"><u>U</u></button>
+                                <button class="np-tbtn np-highlight" onclick="window.app.notepadFormat('hiliteColor', 'yellow')" title="Highlight">&#128396;</button>
+                            </div>
+                            <div class="np-tb-group">
+                                <button class="np-tbtn" onclick="window.app.notepadFormat('justifyLeft')" title="Left">&#8676;</button>
+                                <button class="np-tbtn" onclick="window.app.notepadFormat('justifyCenter')" title="Center">&#8596;</button>
+                                <button class="np-tbtn" onclick="window.app.notepadFormat('justifyRight')" title="Right">&#8677;</button>
+                                <button class="np-tbtn" onclick="window.app.notepadFormat('insertUnorderedList')" title="Bullet">&bull; List</button>
+                            </div>
+                            <div class="np-tb-group">
+                                <label class="np-tbtn np-file-upload" title="Import Image">
+                                    &#128247; Image
+                                    <input type="file" id="notepadImageInput" accept=".jpg,.jpeg,.png" multiple onchange="window.app.notepadInsertImage(event)">
+                                </label>
+                                <button class="np-tbtn" onclick="window.app.openNotepadDrawModal()" title="Draw Stamp">&#9998; Draw</button>
+                                <select class="np-select" id="notepadIconSelect" onchange="window.app.notepadInsertIcon(this)" title="Icons">
+                                    <option value="">&#11088; Icons</option>
+                                    <option value="&#9989;">&#9989;</option>
+                                    <option value="&#10060;">&#10060;</option>
+                                    <option value="&#11088;">&#11088;</option>
+                                    <option value="&#128293;">&#128293;</option>
+                                    <option value="&#128205;">&#128205;</option>
+                                </select>
+                            </div>
+                            <div class="np-tb-group np-tb-last">
+                                <input type="color" class="np-color-pick" onchange="window.app.notepadFormat('foreColor', this.value)" title="Color">
+                                <button class="np-tbtn np-tbtn-clear" onclick="window.app.notepadFormat('removeFormat')" title="Clear">&#10005;</button>
+                            </div>
+                        </div>
+                        <div class="np-editor" id="notepadEditor" contenteditable="true"></div>
+                    </div>
+                </div>
+
+                <!-- Notepad Drawing Modal -->
+                <div class="np-draw-modal hidden" id="notepadDrawModal">
+                    <div class="np-draw-box">
+                        <div class="np-draw-header">
+                            <span>Draw Stamp / Signature</span>
+                            <button class="np-draw-close" onclick="window.app.closeNotepadDrawModal()">&times;</button>
+                        </div>
+                        <canvas id="notepadDrawCanvas" class="np-draw-canvas"></canvas>
+                        <div class="np-draw-actions">
+                            <button class="np-btn np-draw-clear" onclick="window.app.clearNotepadCanvas()">Clear</button>
+                            <button class="np-btn np-draw-cancel" onclick="window.app.closeNotepadDrawModal()">Cancel</button>
+                            <button class="np-btn np-draw-insert" onclick="window.app.insertNotepadDrawing()">Insert</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= PAGE VIEW ================= -->
+                <div class="page-view hidden" id="pageView">
+                    <div class="page-header">
+                        <button class="btn btn-outline-secondary" id="btnBackToDash"><i data-lucide="arrow-left"></i></button>
+                        <div class="page-icon-wrapper">
+                            <button class="page-icon-btn" id="pageIconBtn"></button>
+                            <div class="icon-picker hidden" id="iconPicker"></div>
+                        </div>
+                        <input type="text" class="page-title-input" id="pageTitleInput" placeholder="Untitled">
+                        <button class="btn btn-outline-danger" id="btnDeletePage" title="Delete page"><i data-lucide="trash-2"></i></button>
+                    </div>
+                    <div class="blocks-container" id="blocksContainer"></div>
+                    <div class="task-filter-bar hidden" id="taskFilterBar">
+                        <div class="task-stats" id="taskStats"></div>
+                        <div class="task-filters" id="taskFilters">
+                            <button class="task-filter-btn active" data-filter="all">All</button>
+                            <button class="task-filter-btn" data-filter="pending"><i data-lucide="clock"></i> Pending</button>
+                            <button class="task-filter-btn" data-filter="in_progress"><i data-lucide="refresh-cw"></i> In Progress</button>
+                            <button class="task-filter-btn" data-filter="on_hold"><i data-lucide="pause"></i> On Hold</button>
+                            <button class="task-filter-btn" data-filter="completed"><i data-lucide="circle-check"></i> Done</button>
+                        </div>
+                    </div>
+                    <div class="add-block-bar">
+                        <button class="btn btn-outline-primary w-100" id="btnAddBlock"><i data-lucide="plus"></i> Add a block</button>
+                        <div class="block-type-menu hidden" id="blockTypeMenu">
+                            <button class="block-type-option" data-type="instruction"><span><i data-lucide="book-open"></i></span> Instruction</button>
+                            <button class="block-type-option" data-type="task"><span><i data-lucide="list-checks"></i></span> Task</button>
+                            <button class="block-type-option" data-type="reminder"><span><i data-lucide="bell"></i></span> Reminder</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= DETAIL VIEW ================= -->
+                <div class="detail-view hidden" id="detailView">
+                    <div class="detail-toolbar no-print">
+                        <button class="btn btn-outline-secondary" id="btnBackDetail"><i data-lucide="arrow-left"></i> Back</button>
+                        <button class="btn btn-primary" id="btnPrintDetail"><i data-lucide="printer"></i> Print / Save PDF</button>
+                    </div>
+                    <div class="detail-document" id="detailDocument"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div class="modal-overlay hidden" id="profileModalOverlay">
+        <div class="profile-modal-wrapper">
+            <!-- Header Banner -->
+            <div class="profile-banner">
+                <div class="profile-banner-pattern"></div>
+                <button class="profile-close-btn" id="btnCloseProfileModal"><i data-lucide="x"></i></button>
+                <div class="profile-avatar-area">
+                    <div class="profile-avatar-ring">
+                        <img src="" alt="" id="profileModalImg" style="display:none">
+                        <div class="profile-avatar-initials" id="profileModalPlaceholder">
+                            <i data-lucide="user"></i>
+                        </div>
+                        <label class="profile-avatar-camera" for="profilePhotoInput">
+                            <i data-lucide="camera"></i>
+                        </label>
+                        <input type="file" id="profilePhotoInput" accept="image/*" class="hidden">
+                    </div>
+                </div>
+            </div>
+            <!-- Name + Role -->
+            <div class="profile-identity">
+                <h3 id="profileModalName">Admin</h3>
+                <span class="profile-role-badge" id="profileModalRole">Admin</span>
+            </div>
+            <!-- Tabs -->
+            <div class="profile-tabs">
+                <button class="profile-tab active" data-tab="personal">
+                    <i data-lucide="user"></i> Personal Info
+                </button>
+                <button class="profile-tab" data-tab="security">
+                    <i data-lucide="shield"></i> Security
+                </button>
+            </div>
+            <!-- Tab Content: Personal -->
+            <div class="profile-tab-content active" id="profileTabPersonal">
+                <div class="profile-field">
+                    <label><i data-lucide="pen-line"></i> Full Name</label>
+                    <input type="text" id="profileFullName" placeholder="Enter your full name" class="profile-input">
+                </div>
+                <div class="profile-field-row">
+                    <div class="profile-field">
+                        <label><i data-lucide="at-sign"></i> Username</label>
+                        <input type="text" id="profileUsername" disabled class="profile-input profile-input-disabled">
+                    </div>
+                    <div class="profile-field">
+                        <label><i data-lucide="mail"></i> Email</label>
+                        <input type="email" id="profileEmail" placeholder="Enter email address" class="profile-input">
+                    </div>
+                </div>
+                <div class="profile-field">
+                    <label><i data-lucide="phone"></i> Phone</label>
+                    <input type="tel" id="profilePhone" placeholder="Enter phone number" class="profile-input">
+                </div>
+                <div class="profile-actions">
+                    <button class="profile-btn profile-btn-primary" id="btnSaveProfile">
+                        <i data-lucide="check"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+            <!-- Tab Content: Security -->
+            <div class="profile-tab-content" id="profileTabSecurity">
+                <div class="profile-field">
+                    <label><i data-lucide="lock"></i> Current Password</label>
+                    <input type="password" id="profileCurrentPass" placeholder="Enter current password" class="profile-input">
+                </div>
+                <div class="profile-field">
+                    <label><i data-lucide="key-round"></i> New Password</label>
+                    <input type="password" id="profileNewPass" placeholder="Enter new password" class="profile-input">
+                </div>
+                <div class="profile-actions">
+                    <button class="profile-btn profile-btn-warning" id="btnChangePass">
+                        <i data-lucide="shield-check"></i> Update Password
+                    </button>
+                </div>
+            </div>
+            <!-- Status Message -->
+            <div class="profile-msg hidden" id="profileFormMsg"></div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay hidden" id="modalOverlay">
+        <div class="modal-box">
+            <div class="modal-header-row">
+                <h3 id="modalTitle"></h3>
+                <button class="btn-modal-close" id="btnCloseModal"><i data-lucide="x"></i></button>
+            </div>
+            <div id="modalBody"></div>
+            <div class="modal-footer-row" id="modalFooter"></div>
+        </div>
+    </div>
+
+    <!-- BACKUP & RESTORE MODAL -->
+    <div class="modal-overlay hidden" id="backupOverlay">
+        <div class="modal-box" style="max-width:600px;">
+            <div class="modal-header-row">
+                <h3><i data-lucide="database" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;"></i>Backup & Restore</h3>
+                <button class="btn-modal-close" onclick="document.getElementById('backupOverlay').classList.add('hidden')"><i data-lucide="x"></i></button>
+            </div>
+
+            <!-- Export Section -->
+            <div class="backup-section">
+                <div class="backup-section-header">
+                    <div class="backup-section-icon" style="background:rgba(16,185,129,0.12);color:#10b981;"><i data-lucide="download"></i></div>
+                    <div>
+                        <h4>Export Backup</h4>
+                        <p>Download all data in your preferred format</p>
+                    </div>
+                </div>
+                <div class="backup-stats" id="backupStats">
+                    <span><i data-lucide="file-text"></i> <strong id="backupPageCount">0</strong> Pages</span>
+                    <span><i data-lucide="layers"></i> <strong id="backupBlockCount">0</strong> Blocks</span>
+                    <span><i data-lucide="users"></i> <strong id="backupUserCount">0</strong> Users</span>
+                    <span><i data-lucide="activity"></i> <strong id="backupLogCount">0</strong> Logs</span>
+                </div>
+                <div class="backup-export-grid">
+                    <button class="backup-export-card" id="btnExportSQLite">
+                        <div class="backup-export-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;"><i data-lucide="hard-drive"></i></div>
+                        <div class="backup-export-info">
+                            <strong>SQLite Database</strong>
+                            <span>Complete .db file — full restore</span>
+                        </div>
+                    </button>
+                    <button class="backup-export-card" id="btnExportExcel">
+                        <div class="backup-export-icon" style="background:rgba(16,185,129,0.12);color:#10b981;"><i data-lucide="table"></i></div>
+                        <div class="backup-export-info">
+                            <strong>Excel Spreadsheet</strong>
+                            <span>View & edit in Excel (.xlsx)</span>
+                        </div>
+                    </button>
+                    <button class="backup-export-card" id="btnExportJSON">
+                        <div class="backup-export-icon" style="background:rgba(88,86,214,0.12);color:#5856d6;"><i data-lucide="file-json"></i></div>
+                        <div class="backup-export-info">
+                            <strong>JSON Data</strong>
+                            <span>Structured data backup (.json)</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="backup-divider"></div>
+
+            <!-- Import Section -->
+            <div class="backup-section">
+                <div class="backup-section-header">
+                    <div class="backup-section-icon" style="background:rgba(88,86,214,0.12);color:#5856d6;"><i data-lucide="upload"></i></div>
+                    <div>
+                        <h4>Restore Backup</h4>
+                        <p>Import data from a saved backup file</p>
+                    </div>
+                </div>
+                <div class="backup-restore-options">
+                    <label class="backup-radio">
+                        <input type="radio" name="restoreMode" value="merge" checked>
+                        <div class="backup-radio-info">
+                            <strong>Merge</strong>
+                            <span>Add backup data to existing data</span>
+                        </div>
+                    </label>
+                    <label class="backup-radio">
+                        <input type="radio" name="restoreMode" value="replace">
+                        <div class="backup-radio-info">
+                            <strong>Replace</strong>
+                            <span>Erase current data and restore</span>
+                        </div>
+                    </label>
+                </div>
+                <div class="backup-file-drop" id="backupFileDrop">
+                    <i data-lucide="file-json" style="width:28px;height:28px;color:var(--cui-secondary-color);"></i>
+                    <p>Drop <strong>.json</strong> or <strong>.db</strong> file here or <span id="btnBrowseBackup">browse</span></p>
+                    <input type="file" id="backupFileInput" accept=".json,.db" style="display:none;">
+                </div>
+                <div class="backup-file-info hidden" id="backupFileInfo">
+                    <i data-lucide="file-check" style="width:16px;height:16px;color:#10b981;"></i>
+                    <span id="backupFileName"></span>
+                    <button class="backup-file-remove" id="btnRemoveBackupFile"><i data-lucide="x"></i></button>
+                </div>
+                <button class="backup-btn backup-btn-import" id="btnRestoreBackup" disabled>
+                    <i data-lucide="upload-cloud"></i> Restore from Backup
+                </button>
+            </div>
+
+            <div class="backup-status hidden" id="backupStatus"></div>
+        </div>
+    </div>
+
+    <!-- ADMIN USERS MODAL -->
+    <div class="modal-overlay hidden" id="adminUsersOverlay">
+        <div class="modal-box" style="max-width:700px;">
+            <div class="modal-header-row">
+                <h3><i data-lucide="users" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;"></i>User Management</h3>
+                <button class="btn-modal-close" onclick="document.getElementById('adminUsersOverlay').classList.add('hidden')"><i data-lucide="x"></i></button>
+            </div>
+            <div id="adminUsersBody">
+                <div class="admin-tabs">
+                    <button class="admin-tab active" data-tab="pending" onclick="window.app.switchAdminTab('pending')">Pending Requests <span id="pendingCount"></span></button>
+                    <button class="admin-tab" data-tab="all" onclick="window.app.switchAdminTab('all')">All Users</button>
+                </div>
+                <div id="adminTabContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="/static/coreui/vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>
+    <script src="/static/coreui/vendors/simplebar/js/simplebar.min.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -6,3 +6,8 @@ intellinote.db.bak
 static/uploads/
 template/
 .env
+notebook_update.zip
+temp_*.py
+fix_*.py
+letter head/
+img-prof.png
