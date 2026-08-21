@@ -173,11 +173,12 @@ class MyNoteBook {
         let searchTimeout;
         searchInput.addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => this.handleSearch(e.target.value), 50);
+            searchTimeout = setTimeout(() => this.handleSearch(e.target.value), 30);
         });
 
         searchInput.addEventListener('focus', () => {
             if (searchInput.value) this.handleSearch(searchInput.value);
+            else this.showSearchHistory();
         });
 
         document.addEventListener('click', (e) => {
@@ -2495,10 +2496,17 @@ class MyNoteBook {
             const lower = text.toLowerCase();
             let score = 0;
             for (const word of words) {
-                if (lower.includes(word)) score += 10;
-                if (lower.startsWith(word)) score += 5;
-                if (lower === word) score += 20;
+                if (lower === word) score += 30;
+                else if (lower.startsWith(word)) score += 20;
+                else if (lower.includes(word)) score += 10;
+                else {
+                    for (let i = 0; i <= lower.length - word.length; i++) {
+                        if (lower.substring(i, i + word.length).includes(word[0])) { score += 2; break; }
+                    }
+                }
             }
+            if (lower === q) score += 50;
+            else if (lower.startsWith(q)) score += 25;
             return score;
         }
 
@@ -2532,6 +2540,12 @@ class MyNoteBook {
 
             const s4 = matchScore(block.page_title);
             if (s4 > score) { score = s4; matchedField = 'page_title'; }
+
+            const s5 = matchScore(block.description);
+            if (s5 > score) { score = s5; matchedField = 'description'; }
+
+            const s6 = matchScore(block.category);
+            if (s6 > score) { score = s6; matchedField = 'category'; }
 
             if (score > 0) {
                 let icon = 'cil-description';
@@ -2622,6 +2636,60 @@ class MyNoteBook {
         return results;
     }
 
+    _getSearchHistory() {
+        return JSON.parse(localStorage.getItem('nb_search_history') || '[]');
+    }
+
+    _saveSearchQuery(query) {
+        var q = query.trim();
+        if (!q || q.length < 2) return;
+        var history = this._getSearchHistory();
+        history = history.filter(h => h.toLowerCase() !== q.toLowerCase());
+        history.unshift(q);
+        if (history.length > 15) history = history.slice(0, 15);
+        localStorage.setItem('nb_search_history', JSON.stringify(history));
+    }
+
+    _removeSearchQuery(index) {
+        var history = this._getSearchHistory();
+        history.splice(index, 1);
+        localStorage.setItem('nb_search_history', JSON.stringify(history));
+        this.showSearchHistory();
+    }
+
+    clearSearchHistory() {
+        localStorage.removeItem('nb_search_history');
+        document.getElementById('searchResults').classList.remove('visible');
+    }
+
+    showSearchHistory() {
+        var resultsContainer = document.getElementById('searchResults');
+        var history = this._getSearchHistory();
+        if (history.length === 0) {
+            resultsContainer.classList.remove('visible');
+            return;
+        }
+        var html = '<div class="search-history-header">' +
+            '<span class="search-history-label">Recent Searches</span>' +
+            '<button class="search-history-clear" onclick="window.app.clearSearchHistory()">Clear</button>' +
+        '</div>';
+        for (var i = 0; i < history.length; i++) {
+            html += '<div class="search-history-item" onclick="window.app._useSearchHistory(\'' + this.escapeHtml(history[i]).replace(/'/g, "\\'") + '\')">' +
+                '<i data-lucide="clock" class="search-history-icon"></i>' +
+                '<span class="search-history-text">' + this.escapeHtml(history[i]) + '</span>' +
+                '<button class="search-history-remove" onclick="event.stopPropagation();window.app._removeSearchQuery(' + i + ')"><i data-lucide="x" style="width:12px;height:12px;"></i></button>' +
+            '</div>';
+        }
+        resultsContainer.innerHTML = html;
+        lucide.createIcons({ nodes: [resultsContainer] });
+        resultsContainer.classList.add('visible');
+    }
+
+    _useSearchHistory(query) {
+        document.getElementById('searchInput').value = query;
+        this.handleSearch(query);
+    }
+
     async handleSearch(query) {
         const resultsContainer = document.getElementById('searchResults');
 
@@ -2629,6 +2697,8 @@ class MyNoteBook {
             resultsContainer.classList.remove('visible');
             return;
         }
+
+        this._saveSearchQuery(query.trim());
 
         if (!this._searchPages) {
             await this.initSearchIndex();
