@@ -2911,35 +2911,72 @@ class MyNoteBook {
 
         const results = [];
         const words = q.split(/\s+/).filter(w => w.length > 0);
+        const MIN_SCORE = 5;
+
+        function stripHtml(text) {
+            if (!text) return '';
+            var tmp = document.createElement('div');
+            tmp.innerHTML = text;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        function getSnippet(text, maxLen) {
+            maxLen = maxLen || 120;
+            var clean = stripHtml(text);
+            if (!clean) return '';
+            var lower = clean.toLowerCase();
+            var bestIdx = -1;
+            for (var i = 0; i < words.length; i++) {
+                var idx = lower.indexOf(words[i]);
+                if (idx !== -1) { bestIdx = idx; break; }
+            }
+            if (bestIdx === -1) return clean.substring(0, maxLen);
+            var start = Math.max(0, bestIdx - 40);
+            var snippet = clean.substring(start, start + maxLen);
+            if (start > 0) snippet = '...' + snippet;
+            if (start + maxLen < clean.length) snippet = snippet + '...';
+            return snippet;
+        }
 
         function matchScore(text) {
             if (!text) return 0;
-            const lower = text.toLowerCase();
-            let score = 0;
-            for (const word of words) {
-                if (lower === word) score += 30;
-                else if (lower.startsWith(word)) score += 20;
-                else if (lower.includes(word)) score += 10;
+            var lower = stripHtml(text).toLowerCase();
+            if (!lower) return 0;
+            var score = 0;
+            var allWordsMatch = true;
+            for (var i = 0; i < words.length; i++) {
+                var word = words[i];
+                var wScore = 0;
+                if (lower === word) wScore = 50;
+                else if (lower.startsWith(word + ' ') || lower.startsWith(word)) wScore = 35;
+                else if (lower.includes(' ' + word + ' ') || lower.includes(' ' + word) || lower.includes(word + ' ') || lower.includes(word)) wScore = 20;
                 else {
-                    for (let i = 0; i <= lower.length - word.length; i++) {
-                        if (lower.substring(i, i + word.length).includes(word[0])) { score += 2; break; }
+                    var wordsInText = lower.split(/\s+/);
+                    for (var j = 0; j < wordsInText.length; j++) {
+                        if (wordsInText[j] === word || wordsInText[j].startsWith(word)) { wScore = 25; break; }
                     }
                 }
+                if (wScore === 0) allWordsMatch = false;
+                score += wScore;
             }
-            if (lower === q) score += 50;
-            else if (lower.startsWith(q)) score += 25;
+            if (!allWordsMatch && words.length > 1) {
+                score = Math.floor(score * 0.3);
+            }
+            if (lower === q) score += 60;
+            else if (lower.startsWith(q)) score += 30;
             return score;
         }
 
         for (const page of this._searchPages) {
             let score = matchScore(page.title);
-            if (score > 0) {
+            if (score >= MIN_SCORE) {
                 results.push({
                     type: 'page',
                     id: page.id,
                     icon: page.icon || 'cil-file',
                     title: page.title,
                     meta: 'Page',
+                    snippet: '',
                     score: score,
                     pageId: page.id
                 });
@@ -2949,33 +2986,35 @@ class MyNoteBook {
         for (const block of this._searchBlocks) {
             let score = 0;
             let matchedField = '';
+            let snippet = '';
 
             var blockContent = block.content || '';
             if (block.block_type === 'notepad') {
-                var tmp = document.createElement('div');
-                tmp.innerHTML = blockContent;
-                blockContent = tmp.textContent || tmp.innerText || '';
+                blockContent = stripHtml(blockContent);
             }
 
             const s1 = matchScore(blockContent);
-            if (s1 > score) { score = s1; matchedField = 'content'; }
+            if (s1 > score) { score = s1; matchedField = 'content'; snippet = getSnippet(blockContent, 120); }
 
             const s2 = matchScore(block.subject);
-            if (s2 > score) { score = s2; matchedField = 'subject'; }
+            if (s2 > score) { score = s2; matchedField = 'subject'; snippet = block.subject || ''; }
 
             const s3 = matchScore(block.ref_detail);
-            if (s3 > score) { score = s3; matchedField = 'ref_detail'; }
+            if (s3 > score) { score = s3; matchedField = 'ref_detail'; snippet = block.ref_detail || ''; }
 
             const s4 = matchScore(block.page_title);
-            if (s4 > score) { score = s4; matchedField = 'page_title'; }
+            if (s4 > score) { score = s4; matchedField = 'page_title'; snippet = block.page_title || ''; }
 
             const s5 = matchScore(block.description);
-            if (s5 > score) { score = s5; matchedField = 'description'; }
+            if (s5 > score) { score = s5; matchedField = 'description'; snippet = block.description || ''; }
 
             const s6 = matchScore(block.category);
-            if (s6 > score) { score = s6; matchedField = 'category'; }
+            if (s6 > score) { score = s6; matchedField = 'category'; snippet = block.category || ''; }
 
-            if (score > 0) {
+            const s7 = matchScore(block.task_priority);
+            if (s7 > score) { score = s7; matchedField = 'task_priority'; snippet = block.task_priority || ''; }
+
+            if (score >= MIN_SCORE) {
                 let icon = 'cil-description';
                 let typeLabel = 'Instruction';
                 let meta = '';
@@ -3015,10 +3054,10 @@ class MyNoteBook {
                     icon: icon,
                     title: title,
                     meta: typeLabel + ' in ' + (block.page_title || 'Unknown') + (meta ? ' - ' + meta : ''),
+                    snippet: snippet,
                     score: score,
                     pageId: block.page_id,
-                    matchedField: matchedField,
-                    matchedText: matchedField === 'subject' ? block.subject : (matchedField === 'ref_detail' ? block.ref_detail : (block.block_type === 'notepad' ? blockContent : block.content))
+                    matchedField: matchedField
                 });
             }
         }
@@ -3032,13 +3071,14 @@ class MyNoteBook {
             const scoreUrl = matchScore(link.url);
             const scoreNote = matchScore(link.note);
             const bestScore = Math.max(scoreName, scoreUrl, scoreNote);
-            if (bestScore > 0) {
+            if (bestScore >= MIN_SCORE) {
                 results.push({
                     type: 'portal_link',
                     id: i,
                     icon: 'cil-link',
                     title: link.name,
                     meta: 'Portal Link' + (link.note ? ' — ' + link.note : ''),
+                    snippet: link.url || '',
                     score: bestScore,
                     pageId: -1,
                     url: link.url
@@ -3052,13 +3092,14 @@ class MyNoteBook {
             const scoreTitle = matchScore(note.title);
             const scoreContent = matchScore(note.content);
             const bestScore = Math.max(scoreTitle, scoreContent);
-            if (bestScore > 0) {
+            if (bestScore >= MIN_SCORE) {
                 results.push({
                     type: 'portal_note',
                     id: i,
                     icon: 'cil-description',
                     title: note.title,
                     meta: 'Portal Note' + (note.content ? ' — ' + note.content.substring(0, 60) : ''),
+                    snippet: note.content || '',
                     score: bestScore,
                     pageId: -1
                 });
@@ -3143,8 +3184,8 @@ class MyNoteBook {
             resultsContainer.innerHTML = '<div class="search-no-results">No results found for "' + this.escapeHtml(query) + '"</div>';
         } else {
             const groups = {};
-            const groupOrder = ['page', 'instruction', 'task', 'reminder', 'portal_link', 'portal_note'];
-            const groupLabels = { page: 'Pages', instruction: 'Instructions', task: 'Tasks', reminder: 'Reminders', portal_link: 'Portal Links', portal_note: 'Portal Notes' };
+            const groupOrder = ['page', 'instruction', 'task', 'reminder', 'notepad', 'portal_link', 'portal_note'];
+            const groupLabels = { page: 'Pages', instruction: 'Instructions', task: 'Tasks', reminder: 'Reminders', notepad: 'Notepad', portal_link: 'Portal Links', portal_note: 'Portal Notes' };
 
             for (const r of results) {
                 const g = r.type;
@@ -3160,11 +3201,18 @@ class MyNoteBook {
                 html += '<div class="search-group-header">' + groupLabels[group] + ' (' + groups[group].length + ')</div>';
                 for (const result of groups[group]) {
                     const titleHtml = this.highlightText(result.title, query);
+                    var snippetHtml = '';
+                    if (result.snippet) {
+                        var snipText = result.snippet;
+                        if (snipText.length > 140) snipText = snipText.substring(0, 140) + '...';
+                        snippetHtml = '<div class="search-result-snippet">' + this.highlightText(snipText, query) + '</div>';
+                    }
                     html += '<div class="search-result-item" data-result-type="' + result.type + '" data-result-id="' + result.id + '" data-page-id="' + result.pageId + '"' + (result.url ? ' data-url="' + this.escapeHtml(result.url) + '"' : '') + '>' +
                         '<span class="search-result-icon">' + renderIcon(result.icon) + '</span>' +
                         '<div class="search-result-info">' +
                         '<div class="search-result-title">' + titleHtml + '</div>' +
                         '<div class="search-result-meta">' + this.escapeHtml(result.meta) + '</div>' +
+                        snippetHtml +
                         '</div></div>';
                 }
                 html += '</div>';

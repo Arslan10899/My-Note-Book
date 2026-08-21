@@ -319,6 +319,7 @@ body.sidebar-collapsed .top-bar-brand { opacity: 1; max-width: 300px; pointer-ev
 .search-result-title { font-size: 12.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .search-highlight { background: rgba(162,177,204,0.3); padding: 1px 3px; border-radius: 3px; font-weight: 700; }
 .search-result-meta { font-size: 10px; color: var(--cui-secondary-color); margin-top: 1px; }
+.search-result-snippet { font-size: 11px; color: var(--cui-secondary-color); margin-top: 4px; line-height: 1.4; padding: 4px 8px; background: var(--cui-body-bg); border-left: 2px solid var(--cui-tertiary-bg); border-radius: 3px; max-height: 44px; overflow: hidden; }
 .search-history-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 14px 4px; }
 .search-history-label { font-size: 9px; font-weight: 800; color: var(--cui-secondary-color); text-transform: uppercase; letter-spacing: 0.5px; }
 .search-history-clear { font-size: 9px; font-weight: 700; color: var(--cui-primary); cursor: pointer; border: none; background: none; padding: 0; }
