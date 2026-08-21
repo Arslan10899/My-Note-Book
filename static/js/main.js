@@ -2730,23 +2730,11 @@ class MyNoteBook {
             }
             table += '</tr>';
         }
-        table += '</table>';
+        table += '</table><p><br></p>';
         var editor = this._npGetActiveEditor();
         if (editor) {
             editor.focus();
-            var sel = window.getSelection();
-            var range = sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
-            if (!range || !editor.contains(range.commonAncestorContainer)) {
-                range = document.createRange();
-                range.selectNodeContents(editor);
-                range.collapse(false);
-            }
-            range.deleteContents();
-            var temp = document.createElement('div');
-            temp.innerHTML = table;
-            var frag = document.createDocumentFragment();
-            while (temp.firstChild) frag.appendChild(temp.firstChild);
-            range.insertNode(frag);
+            document.execCommand('insertHTML', false, table);
         }
     }
 
